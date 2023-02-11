@@ -1,6 +1,8 @@
 package com.travelsmartplus.dao
 
 
+import com.travelsmartplus.models.Orgs
+import com.travelsmartplus.models.Users
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.*
@@ -15,6 +17,12 @@ object DatabaseFactory {
 
     fun init() {
         Database.connect(hikari())
+        transaction {
+            SchemaUtils.createMissingTablesAndColumns(
+                Users,
+                Orgs
+            )
+        }
     }
 
     private fun hikari(): HikariDataSource {

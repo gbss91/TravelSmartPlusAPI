@@ -25,4 +25,8 @@ class OrgEntity(id: EntityID<Int>): IntEntity(id) {
     companion object : IntEntityClass<OrgEntity>(Orgs)
     var orgName by Orgs.orgName
     var duns by Orgs.duns
+
 }
+
+//Transform entity to data class
+fun OrgEntity.toOrg() = Org(id.value, orgName, duns)
