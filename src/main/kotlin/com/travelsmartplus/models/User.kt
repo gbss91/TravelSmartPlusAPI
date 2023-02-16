@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 //Data class
 @Serializable
 data class User(
-    val id: Int,
+    val id: Int? = 0,
     val orgId: Int,
     val firstName: String,
     val lastName: String,

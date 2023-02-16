@@ -9,7 +9,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 //Data class
 @Serializable
 data class Org(
-    val id: Int,
+    val id: Int? = 0,
     val orgName: String,
     val duns: Int
 )

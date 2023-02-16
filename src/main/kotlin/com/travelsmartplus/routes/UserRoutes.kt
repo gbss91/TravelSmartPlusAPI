@@ -23,8 +23,8 @@ fun Route.userRoutes() {
     //Create user
     post("/user") {
         val newUser = call.receive<User>()
-        dao.addUser(newUser)
-        call.respond(HttpStatusCode.Accepted)
+        val user = dao.addUser(newUser)
+        call.respond(HttpStatusCode.Accepted, user?.id!!)
     }
 
     route("user/{id}") {
