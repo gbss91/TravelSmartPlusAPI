@@ -1,53 +1,54 @@
 package com.travelsmartplus.integration
 
+import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.Org
-import com.travelsmartplus.models.User
 import com.travelsmartplus.module
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class OrgIntegrationTests {
 
-    //Variables used for all tests
-    companion object {
-        private val org = Org(orgName = "My Org Inc", duns = 123456)
-        private var orgId: Int? = null
+    @Before
+    fun setup() {
+        DatabaseTestHelper.setup()
+    }
+
+    @After
+    fun tearDown() {
+        DatabaseTestHelper.cleanup()
     }
 
     @Test
-    fun createOrg() = testApplication {
+    fun `create org`() = testApplication {
         application { module() }
+        val org = Org(orgName = "My Org Inc", duns = 123456)
         val request = client.post("api/org") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(org))
         }
-        assertEquals(HttpStatusCode.Accepted, request.status)
-
-        //Store org ID for other tests
-        orgId = request.body()
+        assertEquals(HttpStatusCode.Created, request.status)
     }
 
     @Test
-    fun getOrg() = testApplication {
+    fun `get org using id`() = testApplication {
         application { module() }
-        val response = client.get("api/org/$orgId")
+        val response = client.get("api/org/1")
         assertEquals(HttpStatusCode.OK, response.status)
         assertNotNull(response)
-
     }
 
     @Test
-    fun deleteOrg() = testApplication {
+    fun `successfully delete org`() = testApplication {
         application { module() }
-        val request = client.delete("api/org/$orgId")
+        val request = client.delete("api/org/1")
         assertEquals(HttpStatusCode.OK, request.status)
     }
-
 }

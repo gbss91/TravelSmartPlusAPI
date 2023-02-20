@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao
 
-
 import com.travelsmartplus.models.Orgs
 import com.travelsmartplus.models.Users
 import com.zaxxer.hikari.HikariConfig

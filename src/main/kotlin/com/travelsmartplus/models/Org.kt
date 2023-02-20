@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
-//Data class
+// Data class
 @Serializable
 data class Org(
     val id: Int? = 0,
@@ -14,19 +14,18 @@ data class Org(
     val duns: Int
 )
 
-//Table
-object Orgs: IntIdTable() {
+// Table
+object Orgs : IntIdTable() {
     val orgName = varchar("org_name", 50)
     val duns = integer("duns").uniqueIndex()
 }
 
-//Entity - Represents row in table
-class OrgEntity(id: EntityID<Int>): IntEntity(id) {
+// Entity - Represents row in table
+class OrgEntity(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<OrgEntity>(Orgs)
     var orgName by Orgs.orgName
     var duns by Orgs.duns
-
 }
 
-//Transform entity to data class
+// Transform entity to data class
 fun OrgEntity.toOrg() = Org(id.value, orgName, duns)

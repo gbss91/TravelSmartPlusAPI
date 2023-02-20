@@ -9,5 +9,4 @@ interface UserDAOFacade {
     suspend fun addUser(user: User): User?
     suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, password: String, salt: String)
     suspend fun deleteUser(id: Int)
-
 }

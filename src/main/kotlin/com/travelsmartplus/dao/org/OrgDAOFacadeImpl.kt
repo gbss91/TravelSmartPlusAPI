@@ -2,6 +2,7 @@ package com.travelsmartplus.dao.org
 
 import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.*
+import io.ktor.server.plugins.*
 
 class OrgDAOFacadeImpl : OrgDAOFacade {
 
@@ -13,27 +14,29 @@ class OrgDAOFacadeImpl : OrgDAOFacade {
         OrgEntity.all().map(OrgEntity::toOrg)
     }
 
-    override suspend fun getOrgByName(orgName: String): Org? = dbQuery {
-        OrgEntity.find { Orgs.orgName eq orgName}.map(OrgEntity::toOrg).singleOrNull()
-    }
-
     override suspend fun getOrgByDuns(duns: Int): Org? = dbQuery {
-        OrgEntity.find { Orgs.duns eq duns}.map(OrgEntity::toOrg).singleOrNull()
+        OrgEntity.find { Orgs.duns eq duns }.map(OrgEntity::toOrg).singleOrNull()
     }
 
     override suspend fun addOrg(org: Org): Org? = dbQuery {
-        OrgEntity.new {
-            this.orgName = org.orgName
-            this.duns = org.duns
-        }.toOrg()
+        if (OrgEntity.find { Orgs.duns eq org.duns }.firstOrNull() != null) {
+            null
+        } else {
+            OrgEntity.new {
+                this.orgName = org.orgName
+                this.duns = org.duns
+            }.toOrg()
+        }
     }
 
     override suspend fun editOrg(id: Int, orgName: String, duns: Int) = dbQuery {
-        OrgEntity[id].orgName = orgName
-        OrgEntity[id].duns= duns
+        val org = OrgEntity.findById(id) ?: throw NotFoundException("Organization not found")
+        OrgEntity[org.id].orgName = orgName
+        OrgEntity[org.id].duns = duns
     }
 
     override suspend fun deleteOrg(id: Int) = dbQuery {
-        OrgEntity[id].delete()
+        val org = OrgEntity.findById(id) ?: throw NotFoundException("Organization not found")
+        OrgEntity[org.id].delete()
     }
 }

@@ -1,25 +1,41 @@
 package com.travelsmartplus.plugins
 
-import io.ktor.server.auth.*
-import io.ktor.util.*
-import io.ktor.server.sessions.*
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import io.ktor.server.request.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
+import io.ktor.util.*
 
 fun Application.configureSecurity() {
+    val myRealm = System.getenv("JWT_REALM")
+    val secret = System.getenv("JWT_SECRET")
+    val audience = System.getenv("JWT_AUDIENCE")
+    val issuer = System.getenv("JWT_ISSUER")
 
     authentication {
-        val myRealm = "MyRealm"
-        val usersInMyRealmToHA1: Map<String, ByteArray> = mapOf(
-            // pass="test", HA1=MD5("test:MyRealm:pass")="fb12475e62dedc5c2744d98eb73b8877"
-            "test" to hex("fb12475e62dedc5c2744d98eb73b8877")
-        )
-
-        digest("myDigestAuth") {
-            digestProvider { userName, realm ->
-                usersInMyRealmToHA1[userName]
+        jwt("auth-jwt") {
+            realm = myRealm
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC256(secret))
+                    .withAudience(audience)
+                    .withIssuer(issuer)
+                    .build()
+            )
+            validate { credential ->
+                if (credential.payload.audience.contains(audience)) {
+                    JWTPrincipal(credential.payload)
+                } else {
+                    null
+                }
+            }
+            challenge { _, _ ->
+                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
             }
         }
     }
@@ -28,14 +44,6 @@ fun Application.configureSecurity() {
     install(Sessions) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
-        }
-    }
-
-    routing {
-        get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
         }
     }
 }

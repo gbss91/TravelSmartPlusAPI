@@ -2,6 +2,7 @@ package com.travelsmartplus.dao.user
 
 import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.*
+import io.ktor.server.plugins.*
 
 class UserDAOFacadeImpl : UserDAOFacade {
 
@@ -19,26 +20,32 @@ class UserDAOFacadeImpl : UserDAOFacade {
 
     override suspend fun addUser(user: User): User? = dbQuery {
         val org = OrgEntity[user.orgId]
-        UserEntity.new {
-            this.orgId = org
-            this.firstName = user.firstName
-            this.lastName = user.lastName
-            this.email = user.email
-            this.password = user.password
-            this.salt = user.salt
-        }.toUser()
+
+        if (UserEntity.find { Users.email eq user.email}.firstOrNull() != null) {
+            null
+        } else {
+            UserEntity.new {
+                this.orgId = org
+                this.firstName = user.firstName
+                this.lastName = user.lastName
+                this.email = user.email
+                this.password = user.password
+                this.salt = user.salt
+            }.toUser()
+        }
     }
 
-
-    override suspend fun editUser( id: Int, firstName: String, lastName: String, email: String, password: String, salt: String ) = dbQuery {
-        UserEntity[id].firstName = firstName
-        UserEntity[id].lastName= lastName
-        UserEntity[id].email = email
-        UserEntity[id].password = password
-        UserEntity[id].salt = salt
+    override suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, password: String, salt: String) = dbQuery {
+        val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
+        UserEntity[user.id].firstName = firstName
+        UserEntity[user.id].lastName = lastName
+        UserEntity[user.id].email = email
+        UserEntity[user.id].password = password
+        UserEntity[user.id].salt = salt
     }
 
     override suspend fun deleteUser(id: Int) = dbQuery {
-        UserEntity[id].delete()
+        val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
+        UserEntity[user.id].delete()
     }
 }
