@@ -16,9 +16,12 @@ import kotlin.test.assertNotNull
 
 class UserIntegrationTests {
 
+    private lateinit var token: String
+
     @Before
     fun setup() {
         DatabaseTestHelper.setup()
+        token = DatabaseTestHelper.signIn(email = "john@test.com", password = "myPass123")
     }
 
     @After
@@ -29,8 +32,9 @@ class UserIntegrationTests {
     @Test
     fun `create new user`() = testApplication {
         application { module() }
-        val user = User(orgId = 1, firstName = "John", lastName = "Doe", email = "John@test.com", password = "123456", salt = "123")
+        val user = User(orgId = 1, firstName = "Sara", lastName = "Smith", email = "sara@test.com", admin = true, password = "myPass123", salt = "")
         val request = client.post("api/user") {
+            header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(user))
         }
@@ -42,12 +46,16 @@ class UserIntegrationTests {
         application { module() }
 
         // Test get all users
-        val response = client.get("api/users/1")
+        val response = client.get("api/users/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
         assertEquals(HttpStatusCode.OK, response.status)
         assertNotNull(response)
 
         // Test get one user
-        val user = client.get("api/user/1")
+        val user = client.get("api/user/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
         assertEquals(HttpStatusCode.OK, user.status)
         assertNotNull(user)
     }
@@ -55,8 +63,9 @@ class UserIntegrationTests {
     @Test
     fun `edit existing user`() = testApplication {
         application { module() }
-        val editUser = User(orgId = 1, firstName = "Paula", lastName = "Smith", email = "sara@test.com", password = "123456", salt = "123")
+        val editUser = User(orgId = 1, firstName = "Paula", lastName = "Smith", email = "sara@test.com", admin = true, password = "123456", salt = "123")
         val request = client.post("api/user/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(editUser))
         }
@@ -66,7 +75,9 @@ class UserIntegrationTests {
     @Test
     fun `successfully delete an user`() = testApplication {
         application { module() }
-        val request = client.delete("api/user/1")
+        val request = client.delete("api/user/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
         assertEquals(HttpStatusCode.OK, request.status)
     }
 }

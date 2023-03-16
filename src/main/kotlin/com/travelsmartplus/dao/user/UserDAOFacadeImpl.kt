@@ -29,17 +29,19 @@ class UserDAOFacadeImpl : UserDAOFacade {
                 this.firstName = user.firstName
                 this.lastName = user.lastName
                 this.email = user.email
+                this.admin = user.admin
                 this.password = user.password
                 this.salt = user.salt
             }.toUser()
         }
     }
 
-    override suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, password: String, salt: String) = dbQuery {
+    override suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, admin: Boolean, password: String, salt: String) = dbQuery {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
         UserEntity[user.id].firstName = firstName
         UserEntity[user.id].lastName = lastName
         UserEntity[user.id].email = email
+        UserEntity[user.id].admin = admin
         UserEntity[user.id].password = password
         UserEntity[user.id].salt = salt
     }

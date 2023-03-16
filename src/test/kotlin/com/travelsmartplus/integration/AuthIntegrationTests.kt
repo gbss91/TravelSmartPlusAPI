@@ -12,7 +12,7 @@ import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
 
 class AuthIntegrationTests {
 

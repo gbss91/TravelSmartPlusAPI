@@ -16,9 +16,12 @@ import kotlin.test.assertNotNull
 
 class OrgIntegrationTests {
 
+    private lateinit var token: String
+
     @Before
     fun setup() {
         DatabaseTestHelper.setup()
+        token = DatabaseTestHelper.signIn(email = "john@test.com", password = "myPass123")
     }
 
     @After
@@ -31,6 +34,7 @@ class OrgIntegrationTests {
         application { module() }
         val org = Org(orgName = "My Org Inc", duns = 123456)
         val request = client.post("api/org") {
+            header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(org))
         }
@@ -40,7 +44,9 @@ class OrgIntegrationTests {
     @Test
     fun `get org using id`() = testApplication {
         application { module() }
-        val response = client.get("api/org/1")
+        val response = client.get("api/org/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
         assertEquals(HttpStatusCode.OK, response.status)
         assertNotNull(response)
     }
@@ -48,7 +54,9 @@ class OrgIntegrationTests {
     @Test
     fun `successfully delete org`() = testApplication {
         application { module() }
-        val request = client.delete("api/org/1")
+        val request = client.delete("api/org/1") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
         assertEquals(HttpStatusCode.OK, request.status)
     }
 }

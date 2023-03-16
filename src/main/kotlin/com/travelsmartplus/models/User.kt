@@ -15,6 +15,7 @@ data class User(
     val firstName: String,
     val lastName: String,
     val email: String,
+    val admin: Boolean,
     val password: String,
     val salt: String
 )
@@ -25,6 +26,7 @@ object Users : IntIdTable() {
     val firstName = varchar("first_name", 50)
     val lastName = varchar("last_name", 50)
     val email = varchar("email", 355).uniqueIndex()
+    val admin = bool("admin")
     val password = varchar("password", 355)
     val salt = varchar("salt", 100)
 }
@@ -36,9 +38,10 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
     var firstName by Users.firstName
     var lastName by Users.lastName
     var email by Users.email
+    var admin by Users.admin
     var password by Users.password
     var salt by Users.salt
 }
 
 // Transform entity to data class
-fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, password, salt)
+fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, admin, password, salt)
