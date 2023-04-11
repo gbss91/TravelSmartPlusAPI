@@ -21,7 +21,7 @@ class UserDAOFacadeImpl : UserDAOFacade {
     override suspend fun addUser(user: User): User? = dbQuery {
         val org = OrgEntity[user.orgId]
 
-        if (UserEntity.find { Users.email eq user.email}.firstOrNull() != null) {
+        if (UserEntity.find { Users.email eq user.email }.firstOrNull() != null) {
             null
         } else {
             UserEntity.new {
@@ -36,7 +36,15 @@ class UserDAOFacadeImpl : UserDAOFacade {
         }
     }
 
-    override suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, admin: Boolean, password: String, salt: String) = dbQuery {
+    override suspend fun editUser(
+        id: Int,
+        firstName: String,
+        lastName: String,
+        email: String,
+        admin: Boolean,
+        password: String,
+        salt: String
+    ) = dbQuery {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
         UserEntity[user.id].firstName = firstName
         UserEntity[user.id].lastName = lastName

@@ -4,6 +4,10 @@ import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.requests.SignUpRequest
 import com.travelsmartplus.module
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -29,7 +33,14 @@ class AuthIntegrationTests {
     @Test
     fun `duplicate user sign up`() = testApplication {
         application { module() }
-        val signUpRequest = SignUpRequest(firstName = "John", lastName = "Doe", email = "john@test.com", password = "myPass123", orgName = "My Org", duns = 1234567)
+        val signUpRequest = SignUpRequest(
+            firstName = "John",
+            lastName = "Doe",
+            email = "john@test.com",
+            password = "myPass123",
+            orgName = "My Org",
+            duns = 1234567
+        )
         val request = client.post("api/signup") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(signUpRequest))
@@ -40,7 +51,14 @@ class AuthIntegrationTests {
     @Test
     fun `successful sign up`() = testApplication {
         application { module() }
-        val signUpRequest = SignUpRequest(firstName = "Sara", lastName = "Smith", email = "sara@test.com", password = "12345678", orgName = "Sara Org", duns = 777777)
+        val signUpRequest = SignUpRequest(
+            firstName = "Sara",
+            lastName = "Smith",
+            email = "sara@test.com",
+            password = "12345678",
+            orgName = "Sara Org",
+            duns = 777777
+        )
         val request = client.post("api/signup") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(signUpRequest))

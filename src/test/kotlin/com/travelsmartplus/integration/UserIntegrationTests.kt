@@ -3,6 +3,11 @@ package com.travelsmartplus.integration
 import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.User
 import com.travelsmartplus.module
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -32,7 +37,15 @@ class UserIntegrationTests {
     @Test
     fun `create new user`() = testApplication {
         application { module() }
-        val user = User(orgId = 1, firstName = "Sara", lastName = "Smith", email = "sara@test.com", admin = true, password = "myPass123", salt = "")
+        val user = User(
+            orgId = 1,
+            firstName = "Sara",
+            lastName = "Smith",
+            email = "sara@test.com",
+            admin = true,
+            password = "myPass123",
+            salt = ""
+        )
         val request = client.post("api/user") {
             header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
@@ -63,7 +76,15 @@ class UserIntegrationTests {
     @Test
     fun `edit existing user`() = testApplication {
         application { module() }
-        val editUser = User(orgId = 1, firstName = "Paula", lastName = "Smith", email = "sara@test.com", admin = true, password = "123456", salt = "123")
+        val editUser = User(
+            orgId = 1,
+            firstName = "Paula",
+            lastName = "Smith",
+            email = "sara@test.com",
+            admin = true,
+            password = "123456",
+            salt = "123"
+        )
         val request = client.post("api/user/1") {
             header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)

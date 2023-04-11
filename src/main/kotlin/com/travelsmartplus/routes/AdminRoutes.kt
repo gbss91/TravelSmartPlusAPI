@@ -39,7 +39,15 @@ fun Route.adminRoutes() {
 
             // Create hash and user
             val saltedHash = hashingService.generate(request.password)
-            val user = User(orgId = request.orgId, firstName = request.firstName, lastName = request.lastName, email = request.email, admin = request.admin, password = saltedHash.hash, salt = saltedHash.salt)
+            val user = User(
+                orgId = request.orgId,
+                firstName = request.firstName,
+                lastName = request.lastName,
+                email = request.email,
+                admin = request.admin,
+                password = saltedHash.hash,
+                salt = saltedHash.salt
+            )
             val isUserAdded = userDAO.addUser(user)
             if (isUserAdded == null) {
                 call.respond(HttpStatusCode.InternalServerError, "Failed to create user")
@@ -49,10 +57,12 @@ fun Route.adminRoutes() {
         } catch (e: IllegalArgumentException) {
             call.respond(HttpStatusCode.InternalServerError, "Failed to create user: ${e.message}")
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "Failed to create user") // No details for other exceptions to avoid disclosing private data
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                "Failed to create user"
+            ) // No details for other exceptions to avoid disclosing private data
         }
     }
-
 
 
 }

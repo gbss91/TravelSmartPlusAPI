@@ -78,7 +78,10 @@ fun Route.authRoutes() {
             Validator.validateSignInRequest(request)
 
             // Check is user exists and validate password
-            val user = userDAO.getUserByEmail(request.email) ?: return@post call.respond(HttpStatusCode.Unauthorized, "Incorrect username or password")
+            val user = userDAO.getUserByEmail(request.email) ?: return@post call.respond(
+                HttpStatusCode.Unauthorized,
+                "Incorrect username or password"
+            )
             val isPassValid = hashingService.verify(
                 value = request.password,
                 saltedHash = SaltedHash(
@@ -90,7 +93,8 @@ fun Route.authRoutes() {
             // Create JWT tokens and session
             if (isPassValid) {
                 val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
-                val refreshToken =  tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
+                val refreshToken =
+                    tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.sessions.set(UserSession(userId = user.id))
                 call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken))
             } else {
@@ -100,7 +104,10 @@ fun Route.authRoutes() {
         } catch (e: IllegalArgumentException) {
             call.respond(HttpStatusCode.BadRequest, "Failed to sign in")
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "Failed to sign in") // No details for other exceptions to avoid disclosing private data
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                "Failed to sign in"
+            ) // No details for other exceptions to avoid disclosing private data
         }
     }
 
@@ -109,12 +116,16 @@ fun Route.authRoutes() {
         post("/authenticate") {
             try {
                 // Extra security layer - Only allows authorisation if already signed in
-                val userId = call.sessions.get<UserSession>()?.userId ?: return@post call.respond(HttpStatusCode.Unauthorized, "Please sign in")
+                val userId = call.sessions.get<UserSession>()?.userId ?: return@post call.respond(
+                    HttpStatusCode.Unauthorized,
+                    "Please sign in"
+                )
 
                 // Generate new tokens
                 val user = userDAO.getUser(userId) ?: return@post call.respond(HttpStatusCode.NotFound)
                 val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
-                val refreshToken =  tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
+                val refreshToken =
+                    tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken))
 
             } catch (e: Exception) {
