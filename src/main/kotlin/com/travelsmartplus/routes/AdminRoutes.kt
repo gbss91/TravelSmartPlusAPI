@@ -3,6 +3,9 @@ package com.travelsmartplus.routes
 import com.travelsmartplus.dao.org.OrgDAOFacadeImpl
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.User
+import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_USER
+import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_USER
+import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
 import com.travelsmartplus.utils.HashingService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -22,7 +25,7 @@ fun Route.adminRoutes() {
             val allUsers = userDAO.allUsers(orgId)
             call.respond(HttpStatusCode.OK, allUsers)
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "Failed to get user: ${e.message}")
+            call.respond(HttpStatusCode.InternalServerError, INTERNAL_SERVER_ERROR)
         }
     }
 
@@ -33,7 +36,7 @@ fun Route.adminRoutes() {
 
             // Validate duplicate user
             if (userDAO.getUserByEmail(request.email) != null) {
-                call.respond(HttpStatusCode.Conflict, "User already exists")
+                call.respond(HttpStatusCode.Conflict, DUPLICATE_USER)
                 return@post
             }
 
@@ -50,17 +53,14 @@ fun Route.adminRoutes() {
             )
             val isUserAdded = userDAO.addUser(user)
             if (isUserAdded == null) {
-                call.respond(HttpStatusCode.InternalServerError, "Failed to create user")
+                call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
                 return@post
             }
             call.respond(HttpStatusCode.Created, user.id!!)
         } catch (e: IllegalArgumentException) {
-            call.respond(HttpStatusCode.InternalServerError, "Failed to create user: ${e.message}")
+            call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
         } catch (e: Exception) {
-            call.respond(
-                HttpStatusCode.InternalServerError,
-                "Failed to create user"
-            ) // No details for other exceptions to avoid disclosing private data
+            call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
         }
     }
 

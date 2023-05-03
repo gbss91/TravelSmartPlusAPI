@@ -2,6 +2,9 @@ package com.travelsmartplus.routes
 
 import com.travelsmartplus.dao.org.OrgDAOFacadeImpl
 import com.travelsmartplus.models.Org
+import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_ORG
+import com.travelsmartplus.models.responses.HttpResponses.FAILED_DELETE_ORG
+import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -19,12 +22,12 @@ fun Route.orgRoutes() {
             val org = dao.addOrg(newOrg)
 
             if (org == null) {
-                call.respond(HttpStatusCode.InternalServerError, "Failed to create organization")
+                call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_ORG)
                 return@post
             }
             call.respond(HttpStatusCode.Created, org.id!!)
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "Failed to create organization: ${e.message}")
+            call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_ORG)
         }
     }
 
@@ -36,7 +39,7 @@ fun Route.orgRoutes() {
                 val org = dao.getOrg(id) ?: throw NotFoundException()
                 call.respond(HttpStatusCode.OK, org)
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "Failed to get organization: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, INTERNAL_SERVER_ERROR)
             }
         }
 
@@ -47,7 +50,7 @@ fun Route.orgRoutes() {
                 dao.deleteOrg(id)
                 call.respond(HttpStatusCode.OK)
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "Failed to delete organization: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, FAILED_DELETE_ORG)
             }
         }
     }
