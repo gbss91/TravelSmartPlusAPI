@@ -1,16 +1,25 @@
 package com.travelsmartplus.plugins
 
-import io.ktor.server.routing.*
-import io.ktor.http.*
+import com.travelsmartplus.routes.*
 import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
+import io.ktor.server.auth.*
+import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
-
     routing {
-        get("/") {
-            call.respondText("Hello World! 102")
+        route("/api") {
+
+            // Admin-only routes
+            authenticate("adminAuth-jwt") {
+                adminRoutes()
+                orgRoutes()
+            }
+
+            authenticate("auth-jwt") {
+                userRoutes()
+            }
+
+            authRoutes()
         }
     }
 }
