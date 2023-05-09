@@ -1,6 +1,5 @@
 package com.travelsmartplus.utils
 
-import io.ktor.server.config.*
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.security.SecureRandom

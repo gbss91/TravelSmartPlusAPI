@@ -11,7 +11,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
-import io.ktor.util.*
 
 fun Application.configureSecurity() {
     val myRealm = System.getenv("JWT_REALM")

@@ -1,6 +1,5 @@
 package com.travelsmartplus.routes
 
-import com.travelsmartplus.dao.org.OrgDAOFacadeImpl
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.User
 import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_USER

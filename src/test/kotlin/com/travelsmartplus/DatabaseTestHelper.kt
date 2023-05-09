@@ -1,41 +1,79 @@
 package com.travelsmartplus
 
-import com.travelsmartplus.dao.DatabaseFactory
-import com.travelsmartplus.models.OrgEntity
-import com.travelsmartplus.models.Orgs
-import com.travelsmartplus.models.UserEntity
-import com.travelsmartplus.models.Users
+import com.travelsmartplus.fixtures.FlightFixtures
+import com.travelsmartplus.fixtures.OrgFixture
+import com.travelsmartplus.fixtures.UserFixture
+import com.travelsmartplus.models.*
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.responses.AuthResponse
 import io.ktor.client.call.*
-import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.time.toJavaDuration
 
 object DatabaseTestHelper {
-
     fun setup() {
-        DatabaseFactory.init() // Creates test database using environment variables
-        transaction {
-            // Add test data
-            OrgEntity.new {
-                orgName = "Test Company"
-                duns = 123456789
+        TestDatabaseFactory.init()
+        // Add test data
+        transaction() {
+
+            Orgs.batchInsert(OrgFixture.orgs) {org ->
+                this[Orgs.orgName] = org.orgName
+                this[Orgs.duns] = org.duns
             }
-            UserEntity.new {
-                orgId = OrgEntity[1]
-                firstName = "John"
-                lastName = "Doe"
-                email = "john@test.com"
-                admin = true
-                password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d" // myPass123
-                salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7"
+
+            Airports.batchInsert(FlightFixtures.airports) { airport ->
+                this[Airports.airportName] = airport.airportName
+                this[Airports.city] = airport.city
+                this[Airports.country] = airport.country
+                this[Airports.iataCode] = airport.iataCode
+                this[Airports.icaoCode] = airport.icaoCode
+                this[Airports.latitude] = airport.latitude
+                this[Airports.longitude] = airport.longitude
+            }
+
+            Users.batchInsert(UserFixture.users) { user ->
+                this[Users.orgId] = OrgEntity[user.orgId].id
+                this[Users.firstName] = user.firstName
+                this[Users.lastName] = user.lastName
+                this[Users.email] = user.email
+                this[Users.admin] = user.admin
+                this[Users.password] = user.password
+                this[Users.salt] = user.salt
+            }
+
+            FlightBookings.batchInsert(FlightFixtures.flightBookings) { booking ->
+                this[FlightBookings.bookingReference] = booking.bookingReference
+                this[FlightBookings.oneWay] = booking.oneWay
+                this[FlightBookings.originCity] = booking.originCity
+                this[FlightBookings.destinationCity] = booking.destinationCity
+                this[FlightBookings.travelClass] = booking.travelClass
+                this[FlightBookings.status] = booking.status
+                this[FlightBookings.totalPrice] = booking.totalPrice
+            }
+
+            FlightSegments.batchInsert(FlightFixtures.flightSegments) { segment ->
+                this[FlightSegments.flightBookingId] = FlightBookingEntity[1].id
+                this[FlightSegments.direction] = segment.direction
+                this[FlightSegments.duration] = segment.duration.toJavaDuration()
+                this[FlightSegments.stops] = segment.stops
+            }
+
+            Flights.batchInsert(FlightFixtures.flights) {flight ->
+                this[Flights.flightSegmentId] = FlightSegmentEntity[1].id
+                this[Flights.departureIataCode] = flight.departureAirport.iataCode
+                this[Flights.departureTime] = flight.departureTime.toJavaLocalDateTime()
+                this[Flights.arrivalIataCode] = flight.arrivalAirport.iataCode
+                this[Flights.arrivalTime] = flight.arrivalTime.toJavaLocalDateTime()
+                this[Flights.carrierIataCode] = flight.carrierIataCode
             }
         }
     }
@@ -45,8 +83,16 @@ object DatabaseTestHelper {
         transaction {
             Orgs.deleteAll()
             Users.deleteAll()
+            FlightBookings.deleteAll()
+            FlightSegments.deleteAll()
+            Flights.deleteAll()
+            Airports.deleteAll()
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE airports_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE flightbookings_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE flights_id_seq RESTART WITH 1;")
         }
     }
 

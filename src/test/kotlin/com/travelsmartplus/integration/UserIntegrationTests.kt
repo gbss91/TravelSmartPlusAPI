@@ -1,32 +1,24 @@
 package com.travelsmartplus.integration
 
 import com.travelsmartplus.DatabaseTestHelper
+import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.User
-import com.travelsmartplus.module
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class UserIntegrationTests {
 
-    private lateinit var token: String
+    private val dao = UserDAOFacadeImpl()
+
 
     @Before
     fun setup() {
         DatabaseTestHelper.setup()
-        token = DatabaseTestHelper.signIn(email = "john@test.com", password = "myPass123")
     }
 
     @After
@@ -35,70 +27,56 @@ class UserIntegrationTests {
     }
 
     @Test
-    fun `create new user`() = testApplication {
-        application { module() }
-        val user = User(
-            orgId = 1,
-            firstName = "Sara",
-            lastName = "Smith",
-            email = "sara@test.com",
-            admin = true,
-            password = "myPass123",
-            salt = ""
-        )
-        val request = client.post("api/user") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(user))
-        }
-        assertEquals(HttpStatusCode.Created, request.status)
+    fun `get user by user Id`() = runBlocking {
+        val user = dao.getUser(1)
+        assertEquals(1, user?.id)
     }
 
     @Test
-    fun `get users`() = testApplication {
-        application { module() }
+    fun `get all users for org`() = runBlocking {
+        val users = dao.allUsers(1)
+        assertTrue(users.isNotEmpty())
+    }
 
-        // Test get all users
-        val response = client.get("api/users/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertNotNull(response)
-
-        // Test get one user
-        val user = client.get("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, user.status)
+    @Test
+    fun `get user by email`() = runBlocking {
+        val user = dao.getUserByEmail("john@test.com")
         assertNotNull(user)
+        assertEquals(1, user.id)
+        assertEquals("John", user.firstName)
     }
 
     @Test
-    fun `edit existing user`() = testApplication {
-        application { module() }
-        val editUser = User(
+    fun `add new user`() = runBlocking {
+        val newUser = User(
             orgId = 1,
-            firstName = "Paula",
-            lastName = "Smith",
-            email = "sara@test.com",
-            admin = true,
-            password = "123456",
-            salt = "123"
+            firstName = "Test",
+            lastName = "User",
+            email = "test@example.com",
+            admin = false,
+            password = "myPass1234",
+            salt = "salt"
         )
-        val request = client.post("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(editUser))
-        }
-        assertEquals(HttpStatusCode.Created, request.status)
+        val user = dao.addUser(newUser)
+        assertNotNull(user?.id)
+        assertEquals("Test", user?.firstName)
     }
 
     @Test
-    fun `successfully delete an user`() = testApplication {
-        application { module() }
-        val request = client.delete("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }
-        assertEquals(HttpStatusCode.OK, request.status)
+    fun `edit user`() = runBlocking {
+
+        val user = dao.editUser(
+            id = 1,
+            firstName = "Paula",
+            lastName = "Doe",
+            email = "john@test.com",
+            admin = true,
+            password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d",
+            salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7"
+        )
+        val updatedUser = dao.getUser(1)
+        assertNotNull(user)
+        assertEquals("Paula", updatedUser?.firstName)
     }
+
 }

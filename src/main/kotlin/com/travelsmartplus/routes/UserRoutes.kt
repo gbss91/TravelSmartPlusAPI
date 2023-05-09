@@ -5,10 +5,8 @@ import com.travelsmartplus.models.User
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_DELETE_USER
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_EDIT_USER
 import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
-import com.travelsmartplus.utils.HashingService
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

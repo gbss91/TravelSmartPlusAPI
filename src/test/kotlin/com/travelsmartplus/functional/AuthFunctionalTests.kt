@@ -1,13 +1,10 @@
-package com.travelsmartplus.integration
+package com.travelsmartplus.functional
 
 import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.requests.SignUpRequest
 import com.travelsmartplus.module
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.call.body
-import io.ktor.client.call.body
+import com.travelsmartplus.testModule
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -18,7 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class AuthIntegrationTests {
+class AuthFunctionalTests {
 
     @Before
     fun setup() {
@@ -30,15 +27,16 @@ class AuthIntegrationTests {
         DatabaseTestHelper.cleanup()
     }
 
+
     @Test
     fun `duplicate user sign up`() = testApplication {
-        application { module() }
+        application { testModule() }
         val signUpRequest = SignUpRequest(
             firstName = "John",
             lastName = "Doe",
             email = "john@test.com",
             password = "myPass123",
-            orgName = "My Org",
+            orgName = "Test Org",
             duns = 1234567
         )
         val request = client.post("api/signup") {
@@ -52,9 +50,9 @@ class AuthIntegrationTests {
     fun `successful sign up`() = testApplication {
         application { module() }
         val signUpRequest = SignUpRequest(
-            firstName = "Sara",
+            firstName = "Paula",
             lastName = "Smith",
-            email = "sara@test.com",
+            email = "paula@test.com",
             password = "12345678",
             orgName = "Sara Org",
             duns = 777777

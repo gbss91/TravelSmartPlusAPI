@@ -28,7 +28,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import kotlin.Exception
 
 fun Route.authRoutes() {
     val userDAO = UserDAOFacadeImpl()

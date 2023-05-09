@@ -1,6 +1,9 @@
 package com.travelsmartplus.plugins
 
-import com.travelsmartplus.routes.*
+import com.travelsmartplus.routes.adminRoutes
+import com.travelsmartplus.routes.authRoutes
+import com.travelsmartplus.routes.orgRoutes
+import com.travelsmartplus.routes.userRoutes
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*

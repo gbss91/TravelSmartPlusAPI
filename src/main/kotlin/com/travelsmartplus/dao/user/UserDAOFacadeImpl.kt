@@ -56,6 +56,6 @@ class UserDAOFacadeImpl : UserDAOFacade {
 
     override suspend fun deleteUser(id: Int) = dbQuery {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
-        UserEntity[user.id].delete()
+        user.delete()
     }
 }

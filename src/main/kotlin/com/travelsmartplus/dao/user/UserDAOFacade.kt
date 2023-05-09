@@ -1,6 +1,6 @@
 package com.travelsmartplus.dao.user
 
-import com.travelsmartplus.models.*
+import com.travelsmartplus.models.User
 
 interface UserDAOFacade {
     suspend fun getUser(id: Int): User?
