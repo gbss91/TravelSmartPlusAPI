@@ -1,10 +1,10 @@
 package com.travelsmartplus.dao.org
 
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.Org
 import com.travelsmartplus.models.OrgEntity
 import com.travelsmartplus.models.Orgs
 import com.travelsmartplus.models.toOrg
+import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 
 class OrgDAOFacadeImpl : OrgDAOFacade {

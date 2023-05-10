@@ -1,7 +1,7 @@
 package com.travelsmartplus.dao.flight
 
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.*
+import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 import kotlin.time.toJavaDuration
 

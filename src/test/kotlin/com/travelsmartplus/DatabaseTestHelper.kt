@@ -1,6 +1,7 @@
 package com.travelsmartplus
 
 import com.travelsmartplus.fixtures.FlightFixtures
+import com.travelsmartplus.fixtures.HotelFixtures
 import com.travelsmartplus.fixtures.OrgFixture
 import com.travelsmartplus.fixtures.UserFixture
 import com.travelsmartplus.models.*
@@ -10,6 +11,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
+import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -50,6 +52,17 @@ object DatabaseTestHelper {
                 this[Users.salt] = user.salt
             }
 
+            HotelBookings.batchInsert(HotelFixtures.hotelBookings) { hotelBooking ->
+                this[HotelBookings.hotelName] = hotelBooking.hotelName
+                this[HotelBookings.address] = hotelBooking.address
+                this[HotelBookings.checkInDate] = hotelBooking.checkInDate.toJavaLocalDate()
+                this[HotelBookings.checkOutDate] = hotelBooking.checkOutDate.toJavaLocalDate()
+                this[HotelBookings.rate] = hotelBooking.rate
+                this[HotelBookings.totalPrice] = hotelBooking.totalPrice
+                this[HotelBookings.latitude] = hotelBooking.latitude
+                this[HotelBookings.longitude] = hotelBooking.longitude
+            }
+
             FlightBookings.batchInsert(FlightFixtures.flightBookings) { booking ->
                 this[FlightBookings.bookingReference] = booking.bookingReference
                 this[FlightBookings.oneWay] = booking.oneWay
@@ -83,6 +96,7 @@ object DatabaseTestHelper {
         transaction {
             Orgs.deleteAll()
             Users.deleteAll()
+            HotelBookings.deleteAll()
             FlightBookings.deleteAll()
             FlightSegments.deleteAll()
             Flights.deleteAll()
@@ -90,6 +104,7 @@ object DatabaseTestHelper {
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE airports_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE hotelbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flights_id_seq RESTART WITH 1;")

@@ -1,9 +1,9 @@
 package com.travelsmartplus.dao.flight
 
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.FlightBooking
 import com.travelsmartplus.models.FlightBookingEntity
 import com.travelsmartplus.models.toFlightBooking
+import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 
 class FlightBookingDAOFacadeImpl : FlightBookingDAOFacade {

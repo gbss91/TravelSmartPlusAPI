@@ -42,6 +42,11 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt:2.2.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
+    // HttpClient for external API calls
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+
+
     // Database dependencies
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")

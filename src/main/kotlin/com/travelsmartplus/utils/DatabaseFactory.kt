@@ -1,4 +1,4 @@
-package com.travelsmartplus.dao
+package com.travelsmartplus.utils
 
 import com.travelsmartplus.models.*
 import com.zaxxer.hikari.HikariConfig

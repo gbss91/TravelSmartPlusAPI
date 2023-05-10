@@ -3,8 +3,12 @@ package com.travelsmartplus.unit
 import com.travelsmartplus.models.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.Test
 import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlin.time.Duration
 
 class BookingTests {
@@ -90,6 +94,17 @@ class BookingTests {
             totalPrice = BigDecimal("760.00")
         )
 
+        val hotelBooking = HotelBooking(
+            hotelName = "Radisson Hotel",
+            address = "123 Main St, Los Angeles, USA",
+            checkInDate = LocalDate(2023, 6, 1),
+            checkOutDate = LocalDate(2023, 6, 5),
+            rate = BigDecimal("99.99"),
+            totalPrice = BigDecimal("399.96"),
+            latitude = 37.7749,
+            longitude = -122.4194
+        )
+
         val booking = Booking(
             id = 1,
             user = user,
@@ -98,6 +113,7 @@ class BookingTests {
             departureDate = LocalDate(2023, 6, 5),
             returnDate = LocalDate(2023, 6, 15),
             flightBooking = flightBooking,
+            hotelBooking = hotelBooking,
             adultsNumber = 2,
             status = "CONFIRMED",
             totalPrice = BigDecimal("760.00")
@@ -113,5 +129,11 @@ class BookingTests {
         assert(booking.adultsNumber == 2)
         assert(booking.status == "CONFIRMED")
         assert(booking.totalPrice == BigDecimal("760.00"))
+
+        // Test Serializer
+        val json = Json.encodeToString(booking)
+        val deserialized = Json.decodeFromString<Booking>(json)
+
+        assertEquals(booking, deserialized)
     }
 }

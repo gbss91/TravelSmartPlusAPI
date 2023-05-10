@@ -70,9 +70,9 @@ class FlightTests {
 
         // Test Serializer
         val json = Json.encodeToString(flightBooking)
-        val parsedFlightBooking = Json.decodeFromString<FlightBooking>(json)
+        val deserialized = Json.decodeFromString<FlightBooking>(json)
 
-        assertEquals(flightBooking, parsedFlightBooking)
+        assertEquals(flightBooking, deserialized)
     }
 
 }

@@ -1,10 +1,10 @@
 package com.travelsmartplus.dao.airline
 
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.Airline
 import com.travelsmartplus.models.AirlineEntity
 import com.travelsmartplus.models.Airlines
 import com.travelsmartplus.models.toAirline
+import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 
 class AirlineDAOFacadeImpl : AirlineDAOFacade {
     override suspend fun getAirline(id: Int): Airline? = dbQuery {
