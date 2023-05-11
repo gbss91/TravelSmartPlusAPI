@@ -1,8 +1,15 @@
 package com.travelsmartplus.dao.user
 
+import com.travelsmartplus.dao.hotel.HotelBookingFacade
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
+
+/**
+ * Implementation of the [UserDAOFacade] interface.
+ * This class provides methods to get, add and delete  user information from the database.
+ * @author Gabriel Salas
+ */
 
 class UserDAOFacadeImpl : UserDAOFacade {
 

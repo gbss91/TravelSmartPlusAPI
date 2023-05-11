@@ -21,6 +21,13 @@ import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.time.toJavaDuration
 
+/**
+ * DatabaseTestHelper sets up the test database by adding necessary test data and provides a function
+ * to clear the database after each test. It also provides sign in functionality for tests that required
+ * authorisation.
+ * @author Gabriel Salas
+*/
+
 object DatabaseTestHelper {
     fun setup() {
         TestDatabaseFactory.init()
@@ -111,6 +118,7 @@ object DatabaseTestHelper {
         }
     }
 
+    // Signs user in for tests that required authentication
     fun signIn(email: String, password: String): String {
         lateinit var token: String
         testApplication {

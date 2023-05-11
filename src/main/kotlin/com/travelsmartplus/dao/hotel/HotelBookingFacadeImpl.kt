@@ -1,11 +1,18 @@
 package com.travelsmartplus.dao.hotel
 
+import com.travelsmartplus.dao.flight.FlightSegmentDAOFacade
 import com.travelsmartplus.models.HotelBooking
 import com.travelsmartplus.models.HotelBookingEntity
 import com.travelsmartplus.models.toHotelBooking
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 import kotlinx.datetime.toJavaLocalDate
+
+/**
+ * Implementation of the [HotelBookingFacade] interface.
+ * This class provides methods to get, add and delete hotel booking information from the database.
+ * @author Gabriel Salas
+ */
 
 class HotelBookingFacadeImpl : HotelBookingFacade {
     override suspend fun getHotelBooking(id: Int): HotelBooking? = dbQuery  {

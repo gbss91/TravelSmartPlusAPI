@@ -9,6 +9,12 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * TestDatabaseFactory creates the database used in the tests and uses [com.zaxxer.hikari]
+ * to create a connection pool
+ * @author Gabriel Salas
+ */
+
 object TestDatabaseFactory {
 
     private val dbUrl = System.getenv("DB_URL")

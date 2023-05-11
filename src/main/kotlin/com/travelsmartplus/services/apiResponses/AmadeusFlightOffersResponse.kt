@@ -2,6 +2,11 @@ package com.travelsmartplus.services.apiResponses
 
 import kotlinx.serialization.Serializable
 
+/**
+ * API response models for Amadeus flight offers. It is based on the model provided by the API and allows to serialise
+ * the response making it easier to handle it. - [API Reference](https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api-reference)
+ */
+
 @Serializable
 data class AmadeusFlightOffersResponse(
     val data: List<FlightOffer>,

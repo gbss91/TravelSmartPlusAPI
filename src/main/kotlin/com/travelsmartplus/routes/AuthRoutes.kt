@@ -29,6 +29,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 
+/**
+ * Defines the authentication routes for user sign-up, sign-in, and refresh token.
+ * @author Gabriel Salas
+ */
+
 fun Route.authRoutes() {
     val userDAO = UserDAOFacadeImpl()
     val orgDAO = OrgDAOFacadeImpl()

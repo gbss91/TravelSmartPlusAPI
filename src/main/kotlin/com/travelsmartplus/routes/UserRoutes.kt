@@ -12,6 +12,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Defines the general user routes to get, update and delete orgs. Add users can only be done by admin in [Route.adminRoutes]
+ * @author Gabriel Salas
+ */
+
 fun Route.userRoutes() {
     val dao = UserDAOFacadeImpl()
     // val hashingService = HashingService()

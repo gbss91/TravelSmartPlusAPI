@@ -3,6 +3,11 @@ package com.travelsmartplus.utils
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.requests.SignUpRequest
 
+/**
+ * Validator provides functions for validating requests.
+ * @author Gabriel Salas
+ */
+
 object Validator {
 
     fun validateSignUpRequest(request: SignUpRequest) {

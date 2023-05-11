@@ -1,5 +1,10 @@
 package com.travelsmartplus.models.responses
 
+/**
+ * Object with the HTTP Response messages returned by all project routes
+ * @author Gabriel Salas
+ */
+
 object HttpResponses {
 
     const val DUPLICATE_ORG = "Organisation already exists. Please contact administrator."

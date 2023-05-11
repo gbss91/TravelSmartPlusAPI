@@ -18,11 +18,9 @@ import kotlinx.serialization.json.Json
 import kotlin.time.Duration
 
 /**
- * Retrieves flights from the Amadeus API based on the provided search parameters.
- * @
- * @param token The authorization token for accessing the Amadeus API.
- * @param bookingSearchRequest The search parameters for flight bookings.
- * @return The flight offers retrieved from the API.
+ * Retrieves flights from the Amadeus API based on the search parameters provided by user
+ * @author Gabriel Salas
+ * @return A list with all the flight offers retrieved from the API.
  * @throws IllegalStateException if there is an error retrieving flights or the API response indicates failure.
  */
 

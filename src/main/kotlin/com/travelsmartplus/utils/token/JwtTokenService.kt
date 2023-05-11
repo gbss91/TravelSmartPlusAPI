@@ -4,6 +4,12 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import java.util.*
 
+/**
+ * JwtTokenService provides functions for generating JWT tokens with claims and expiration date.
+ * @author Gabriel Salas
+ * @return The generated JWT token as a string.
+ */
+
 class JwtTokenService {
 
     private val secret: String = System.getenv("JWT_SECRET")

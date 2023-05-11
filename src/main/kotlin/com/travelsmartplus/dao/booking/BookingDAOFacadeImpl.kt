@@ -1,9 +1,16 @@
 package com.travelsmartplus.dao.booking
 
+import com.travelsmartplus.dao.airport.AirportDAOFacade
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 import kotlinx.datetime.toJavaLocalDate
+
+/**
+ * Implementation of the [BookingDAOFacade] interface.
+ * This class provides methods to get, add and delete booking information from the database.
+ * @author Gabriel Salas
+ */
 
 class BookingDAOFacadeImpl : BookingDAOFacade {
     override suspend fun getBooking(id: Int): Booking? = dbQuery {

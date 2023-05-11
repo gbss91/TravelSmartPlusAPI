@@ -8,6 +8,14 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 
+/**
+ * Retrieves a token from Amadeus API. This token is used for all requests
+ * as per [Amadeus documentation](https://developers.amadeus.com/self-service/apis-docs/guides/authorization-262)
+ * @author Gabriel Salas
+ * @return A [String] with the token
+ * @throws IllegalStateException if there is an error retrieving token or the API response indicates failure.
+ */
+
 class AmadeusAuthentication {
 
     private val amadeusKey = System.getenv("AMADEUS_KEY")
@@ -17,7 +25,7 @@ class AmadeusAuthentication {
         return getAccessToken()
     }
 
-    // Request access token to make API calls as per Amadeus documentation [https://developers.amadeus.com/self-service/apis-docs/guides/authorization-262]
+    // Request access token
     private suspend fun getAccessToken(): String {
         val client = HttpClientFactory.createHttpClient()
 

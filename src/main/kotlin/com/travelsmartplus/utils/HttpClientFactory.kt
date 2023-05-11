@@ -5,6 +5,12 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
+/**
+ * Sets ups the [HttpClient] used to make calls to external APIs
+ * @author Gabriel Salas
+ * @return The configured HttpClient object.
+ * */
+
 object HttpClientFactory {
 
     fun createHttpClient(): HttpClient {

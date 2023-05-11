@@ -4,6 +4,11 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.security.SecureRandom
 
+/**
+ * HashingService provides functions for generating and verifying hashed values using salt.
+ * @author Gabriel Salas
+ */
+
 class HashingService {
 
     // Generates salt and hash using user password

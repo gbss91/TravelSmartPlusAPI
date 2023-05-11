@@ -12,6 +12,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Defines the org  routes to get, add and delete orgs.
+ * @author Gabriel Salas
+ */
+
 fun Route.orgRoutes() {
     val dao = OrgDAOFacadeImpl()
 

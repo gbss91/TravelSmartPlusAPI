@@ -5,6 +5,12 @@ import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 import kotlin.time.toJavaDuration
 
+/**
+ * Implementation of the [FlightSegmentDAOFacade] interface.
+ * This class provides methods to get, add and delete flight segments information from the database.
+ * @author Gabriel Salas
+ */
+
 class FlightSegmentDAOFacadeImpl : FlightSegmentDAOFacade {
     override suspend fun getFlightSegment(id: Int): FlightSegment? = dbQuery {
         FlightSegmentEntity.findById(id)?.toFlightSegment()

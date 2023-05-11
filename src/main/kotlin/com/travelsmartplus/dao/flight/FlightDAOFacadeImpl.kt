@@ -5,6 +5,12 @@ import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
 import kotlinx.datetime.toJavaLocalDateTime
 
+/**
+ * Implementation of the [FlightDAOFacade] interface.
+ * This class provides methods to get, add and delete flight information from the database.
+ * @author Gabriel Salas
+ */
+
 class FlightDAOFacadeImpl : FlightDAOFacade {
     override suspend fun getFlight(id: Int): Flight? = dbQuery {
         FlightEntity.findById(id)?.toFlight()

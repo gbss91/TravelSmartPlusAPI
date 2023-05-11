@@ -8,7 +8,12 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
 
-// Custom Serializer for BigDecimal - Reference [https://petnagy.medium.com/kotlinx-serialization-part3-4bb41a33c1a3]
+/**
+ * Custom Serializer for BigDecimal - [Reference](https://petnagy.medium.com/kotlinx-serialization-part3-4bb41a33c1a3)
+ * @author Peter Nagy
+ * @throws IllegalArgumentException in order to indicate serialization and deserialization errors.
+ */
+
 class BigDecimalSerializer : KSerializer<BigDecimal> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)

@@ -9,6 +9,12 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * DatabaseFactory creates the database used in the project and uses [com.zaxxer.hikari]
+ * to create a connection pool
+ * @author Gabriel Salas
+*/
+
 object DatabaseFactory {
 
     private val dbUrl = System.getenv("DB_URL")
@@ -44,6 +50,7 @@ object DatabaseFactory {
         return HikariDataSource(config)
     }
 
+    // Executes a database query within a transaction using the provided block
     suspend fun <T> dbQuery(block: () -> T): T =
         withContext(Dispatchers.IO) {
             transaction { block() }

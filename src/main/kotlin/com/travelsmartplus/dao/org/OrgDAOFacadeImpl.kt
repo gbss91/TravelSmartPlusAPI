@@ -1,11 +1,18 @@
 package com.travelsmartplus.dao.org
 
+import com.travelsmartplus.dao.hotel.HotelBookingFacade
 import com.travelsmartplus.models.Org
 import com.travelsmartplus.models.OrgEntity
 import com.travelsmartplus.models.Orgs
 import com.travelsmartplus.models.toOrg
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
+
+/**
+ * Implementation of the [OrgDAOFacade] interface.
+ * This class provides methods to get, add and delete org information from the database.
+ * @author Gabriel Salas
+ */
 
 class OrgDAOFacadeImpl : OrgDAOFacade {
 
