@@ -6,7 +6,6 @@ import com.travelsmartplus.dao.flight.FlightBookingDAOFacadeImpl
 import com.travelsmartplus.dao.flight.FlightDAOFacadeImpl
 import com.travelsmartplus.dao.flight.FlightSegmentDAOFacadeImpl
 import com.travelsmartplus.models.Flight
-import com.travelsmartplus.models.FlightEntity
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDateTime

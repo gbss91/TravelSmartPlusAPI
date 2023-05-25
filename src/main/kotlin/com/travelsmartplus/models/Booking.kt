@@ -24,7 +24,7 @@ data class Booking(
     val departureDate: LocalDate,
     val returnDate: LocalDate?,
     val flightBooking: FlightBooking,
-    val hotelBooking: HotelBooking,
+    val hotelBooking: HotelBooking?,
     val adultsNumber: Int,
     val status: String,
     @Serializable(with = BigDecimalSerializer::class)
@@ -40,7 +40,7 @@ object Bookings: IntIdTable() {
     val departureDate = date("departure_date")
     val returnDate = date("return_date").nullable()
     val flightBookingId = reference("flight_booking_id", FlightBookings.id, onDelete = ReferenceOption.CASCADE)
-    val hotelBookingId = reference("hotel_booking_id", HotelBookings.id, onDelete = ReferenceOption.CASCADE)
+    val hotelBookingId = reference("hotel_booking_id", HotelBookings.id, onDelete = ReferenceOption.CASCADE).nullable()
     val adultsNumber = integer("adults_no")
     val status = varchar("status", 20)
     val totalPrice = decimal("total_price", 10, 2)
@@ -56,7 +56,7 @@ class BookingEntity(id: EntityID<Int>): IntEntity(id) {
     var departureDate by Bookings.departureDate
     var returnDate by Bookings.returnDate
     var flightBookingId by FlightBookingEntity referencedOn Bookings.flightBookingId
-    var hotelBookingId by HotelBookingEntity referencedOn  Bookings.hotelBookingId
+    var hotelBookingId by HotelBookingEntity optionalReferencedOn Bookings.hotelBookingId
     var adultsNumber by Bookings.adultsNumber
     var status by Bookings.status
     var totalPrice by Bookings.totalPrice
@@ -68,7 +68,7 @@ fun BookingEntity.toBooking(): Booking {
     val origin = AirportEntity.find { Airports.iataCode eq originIata }.single().toAirport()
     val destination = AirportEntity.find { Airports.iataCode eq destinationIata }.single().toAirport()
     val flightBooking = FlightBookingEntity.findById(flightBookingId.id)!!.toFlightBooking()
-    val hotelBooking = HotelBookingEntity.findById(hotelBookingId.id)!!.toHotelBooking()
+    val hotelBooking = hotelBookingId?.let { HotelBookingEntity.findById(it.id)?.toHotelBooking() }
 
     return Booking(id.value, user, origin, destination, departureDate.toKotlinLocalDate(), returnDate?.toKotlinLocalDate(), flightBooking, hotelBooking, adultsNumber, status, totalPrice)
 

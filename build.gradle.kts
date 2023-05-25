@@ -40,11 +40,13 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:2.2.4")
     implementation("io.ktor:ktor-server-auth:2.2.4")
     implementation("io.ktor:ktor-server-auth-jwt:2.2.4")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
     // HttpClient for external API calls
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
 
 
     // Database dependencies

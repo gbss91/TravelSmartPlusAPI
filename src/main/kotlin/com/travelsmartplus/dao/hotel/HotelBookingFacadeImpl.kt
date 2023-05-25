@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.hotel
 
-import com.travelsmartplus.dao.flight.FlightSegmentDAOFacade
 import com.travelsmartplus.models.HotelBooking
 import com.travelsmartplus.models.HotelBookingEntity
 import com.travelsmartplus.models.toHotelBooking

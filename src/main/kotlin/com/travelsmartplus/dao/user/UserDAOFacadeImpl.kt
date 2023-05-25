@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.user
 
-import com.travelsmartplus.dao.hotel.HotelBookingFacade
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*

@@ -36,13 +36,16 @@ class HotelIntegrationTests {
         val newHotelBooking = HotelBooking(
             hotelName = "Crowne Plaza Dublin",
             address = "Northwood Avenue, Dublin, Ireland",
-            checkInDate = LocalDate(2023, 6, 1),
-            checkOutDate = LocalDate(2023, 6, 5),
+            checkInDate = LocalDate(2023, 11, 1),
+            checkOutDate = LocalDate(2023, 11, 5),
             rate = BigDecimal("120.00"),
             totalPrice = BigDecimal("480.00"),
             latitude = 37.7749,
             longitude = -122.4194
         )
+
+        val hotel = dao.addHotelBooking(newHotelBooking)
+        assertEquals(2, hotel)
     }
 
     @Test

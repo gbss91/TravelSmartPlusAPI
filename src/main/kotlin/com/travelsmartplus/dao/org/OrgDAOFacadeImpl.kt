@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.org
 
-import com.travelsmartplus.dao.hotel.HotelBookingFacade
 import com.travelsmartplus.models.Org
 import com.travelsmartplus.models.OrgEntity
 import com.travelsmartplus.models.Orgs

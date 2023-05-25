@@ -20,6 +20,7 @@ class AmadeusAuthentication {
 
     private val amadeusKey = System.getenv("AMADEUS_KEY")
     private val amadeusSecret = System.getenv("AMADEUS_SECRET")
+    private val client = HttpClientFactory.createHttpClient()
 
     suspend fun call(): String {
         return getAccessToken()
@@ -27,25 +28,25 @@ class AmadeusAuthentication {
 
     // Request access token
     private suspend fun getAccessToken(): String {
-        val client = HttpClientFactory.createHttpClient()
-
         try {
             val response = client.submitForm(
                 url = AMADEUS_TEST_AUTH,
-                formParameters = parameters {
+                formParameters = Parameters.build {
                     append("grant_type", "client_credentials")
                     append("client_id", amadeusKey)
                     append("client_secret", amadeusSecret)
-                }
+                },
+                encodeInQuery = false
             )
 
             if (response.status.isSuccess()) {
                 val jsonObject = Json.parseToJsonElement(response.body()).jsonObject
-                return jsonObject["access_token"].toString()
+                return jsonObject["access_token"].toString().removeSurrounding("\"")
             } else {
                 throw IllegalStateException("Failed to retrieve access token. Response status: ${response.status}")
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             throw IllegalStateException("Error occurred while retrieving access token", e)
         } finally {
             client.close()

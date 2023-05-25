@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.airport
 
-import com.travelsmartplus.dao.airline.AirlineDAOFacade
 import com.travelsmartplus.models.Airport
 import com.travelsmartplus.models.AirportEntity
 import com.travelsmartplus.models.Airports

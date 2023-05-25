@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.flight
 
-import com.travelsmartplus.dao.booking.BookingDAOFacade
 import com.travelsmartplus.models.FlightBooking
 import com.travelsmartplus.models.FlightBookingEntity
 import com.travelsmartplus.models.toFlightBooking

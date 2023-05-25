@@ -10,21 +10,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AmadeusFlightOffersResponse(
     val data: List<FlightOffer>,
-    val dictionaries: Dictionaries
+    val dictionaries: Dictionaries? = null
 )
 
 @Serializable
 data class FlightOffer(
     val type: String,
     val id: String,
-    val source: String,
-    val instantTicketingRequired: Boolean,
-    val nonHomogeneous: Boolean,
+    val source: String? = null,
+    val instantTicketingRequired: Boolean? = null,
+    val nonHomogeneous: Boolean? = null,
     val oneWay: Boolean,
-    val lastTicketingDate: String,
-    val numberOfBookableSeats: Int,
+    val lastTicketingDate: String? = null,
+    val numberOfBookableSeats: Int? = null,
     val itineraries: List<Itinerary>,
-    val price: Price,
+    val price: FlightPrice,
     val pricingOptions: PricingOptions,
     val validatingAirlineCodes: List<String>? = null
 )
@@ -41,33 +41,33 @@ data class Segment(
     val arrival: FlightEndpoint,
     val carrierCode: String,
     val number: String,
-    val aircraft: Aircraft,
-    val operating: OperatingCarrier,
+    val aircraft: Aircraft? = null,
+    val operating: OperatingCarrier? = null,
     val duration: String,
     val id: String,
-    val numberOfStops: Int,
-    val blacklistedInEU: Boolean
+    val numberOfStops: Int? = null,
+    val blacklistedInEU: Boolean? = null
 )
 
 @Serializable
 data class FlightEndpoint(
     val iataCode: String,
-    val terminal: String,
+    val terminal: String? = null,
     val at: String
 )
 
 @Serializable
 data class Aircraft(
-    val code: String
+    val code: String? = null
 )
 
 @Serializable
 data class OperatingCarrier(
-    val carrierCode: String
+    val carrierCode: String? = null
 )
 
 @Serializable
-data class Price(
+data class FlightPrice(
     val currency: String,
     val total: String,
     val base: String,
@@ -84,52 +84,19 @@ data class Fee(
 @Serializable
 data class PricingOptions(
     val fareType: List<String>,
-    val includedCheckedBagsOnly: Boolean
+    val includedCheckedBagsOnly: Boolean? = null
 )
 
 @Serializable
 data class Dictionaries(
-    val locations: Map<String, Location>,
-    val aircraft: Map<String, AircraftDictionaryEntry>,
-    val currencies: Map<String, Currency>,
-    val carriers: Map<String, Carrier>,
-    val serviceClasses: Map<String, ServiceClass>,
-    val trafficTypes: Map<String, TrafficType>
+    val locations: Map<String, Location>? = null,
+    val aircraft: Map<String, String>? = null,
+    val currencies: Map<String, String>? = null,
+    val carriers: Map<String, String>? = null
 )
 
 @Serializable
 data class Location(
     val cityCode: String,
     val countryCode: String
-)
-
-@Serializable
-data class AircraftDictionaryEntry(
-    val iataCode: String,
-    val icaoCode: String? = null
-)
-
-@Serializable
-data class Currency(
-    val code: String,
-    val name: String
-)
-
-@Serializable
-data class Carrier(
-    val code: String,
-    val businessName: String,
-    val commonName: String? = null
-)
-
-@Serializable
-data class ServiceClass(
-    val code: String,
-    val description: String
-)
-
-@Serializable
-data class TrafficType(
-    val code: String,
-    val description: String
 )

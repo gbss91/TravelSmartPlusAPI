@@ -6,7 +6,9 @@ package com.travelsmartplus.services
 */
 
 object Endpoints {
-    val AMADEUS_TEST_BASE_URL = "https://test.api.amadeus.com/v2"
-    val AMADEUS_TEST_AUTH = "https://test.api.amadeus.com/v1/security/oauth2/token"
-    val SEARCH_FLIGHT = "$AMADEUS_TEST_BASE_URL/shopping/flight-offers"
+    private const val AMADEUS_TEST_BASE_URL = "https://test.api.amadeus.com"
+    const val AMADEUS_TEST_AUTH = "https://test.api.amadeus.com/v1/security/oauth2/token"
+    const val SEARCH_FLIGHT = "$AMADEUS_TEST_BASE_URL/v2/shopping/flight-offers"
+    const val HOTEL_LIST = "$AMADEUS_TEST_BASE_URL/v1/reference-data/locations/hotels/by-city"
+    const val SEARCH_HOTEL = "$AMADEUS_TEST_BASE_URL/v3/shopping/hotel-offers"
 }

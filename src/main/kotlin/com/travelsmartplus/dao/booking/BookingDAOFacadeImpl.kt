@@ -1,6 +1,5 @@
 package com.travelsmartplus.dao.booking
 
-import com.travelsmartplus.dao.airport.AirportDAOFacade
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import io.ktor.server.plugins.*
