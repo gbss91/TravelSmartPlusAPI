@@ -5,6 +5,7 @@ val exposedVersion: String by project
 val hikaricpVersion: String by project
 val postgresVersion: String by project
 val commonsCodecVersion: String by project
+val mockkVersion: String by project
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -57,7 +58,9 @@ dependencies {
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("com.zaxxer:HikariCP:$hikaricpVersion")
 
+    // Testing
     implementation("commons-codec:commons-codec:$commonsCodecVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm:2.2.4")
     testImplementation("org.testng:testng:7.7.0")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
 }

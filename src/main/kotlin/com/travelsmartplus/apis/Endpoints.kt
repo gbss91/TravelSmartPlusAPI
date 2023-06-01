@@ -1,4 +1,4 @@
-package com.travelsmartplus.services
+package com.travelsmartplus.apis
 
 /**
  * Object with all the URLs used in the APIs

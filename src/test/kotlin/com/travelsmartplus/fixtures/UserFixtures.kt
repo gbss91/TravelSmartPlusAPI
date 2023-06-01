@@ -2,7 +2,7 @@ package com.travelsmartplus.fixtures
 
 import com.travelsmartplus.models.User
 
-object UserFixture {
+object UserFixtures {
     val users = listOf(
         User(
             orgId = 1,
@@ -11,7 +11,10 @@ object UserFixture {
             email = "john@test.com",
             admin = true,
             password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d", // myPass123
-            salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7"
+            salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7",
+            accountSetup = true,
+            preferredAirlines = setOf("UA", "EI", "DL"),
+            preferredHotelChains = setOf("MC")
         ),
         User(
             orgId = 1,
@@ -21,6 +24,8 @@ object UserFixture {
             admin = false,
             password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d",// myPass123
             salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7",
+            accountSetup = true,
+            preferredAirlines = setOf("UA", "EI", "DL"),
         )
     )
 }

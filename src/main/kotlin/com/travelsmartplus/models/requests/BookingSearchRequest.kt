@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
  */
 
 @Serializable
-data class BookingSearchRequest(
+data class  BookingSearchRequest(
     val oneWay: Boolean,
     val nonStop: Boolean,
     val origin: Airport,
@@ -29,6 +29,7 @@ data class BookingSearchRequest(
     val returnDate: LocalDate?,
     val adultsNumber: Int,
     val travelClass: String,
+    val hotel: Boolean,
     val checkInDate: LocalDate?,
     val checkOutDate: LocalDate?
 )

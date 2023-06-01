@@ -1,4 +1,4 @@
-package com.travelsmartplus.services.apiResponses
+package com.travelsmartplus.apis.apiResponses
 
 import kotlinx.serialization.Serializable
 
@@ -42,7 +42,7 @@ data class Offer(
     val rateFamilyEstimated: RateFamilyEstimated? = null,
     val room: Room? = null,
     val guests: Guests? = null,
-    val price: HotelPrice? = null,
+    val price: HotelPrice,
     val policies: Policies? = null,
     val self: String? = null
 )
@@ -82,7 +82,7 @@ data class Guests(
 data class HotelPrice(
     val currency: String? = null,
     val base: String? = null,
-    val total: String? = null,
+    val total: String,
     val variations: Variations? = null
 )
 

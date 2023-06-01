@@ -38,6 +38,7 @@ class UserDAOFacadeImpl : UserDAOFacade {
                 this.admin = user.admin
                 this.password = user.password
                 this.salt = user.salt
+                this.accountSetup = user.accountSetup
             }.toUser()
         }
     }
@@ -49,7 +50,10 @@ class UserDAOFacadeImpl : UserDAOFacade {
         email: String,
         admin: Boolean,
         password: String,
-        salt: String
+        salt: String,
+        accountSetup: Boolean,
+        preferredAirlines: Set<String>?,
+        preferredHotelChains: Set<String>?
     ) = dbQuery {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
         UserEntity[user.id].firstName = firstName
@@ -58,6 +62,10 @@ class UserDAOFacadeImpl : UserDAOFacade {
         UserEntity[user.id].admin = admin
         UserEntity[user.id].password = password
         UserEntity[user.id].salt = salt
+        UserEntity[user.id].accountSetup= accountSetup
+        UserEntity[user.id].preferredAirlines= preferredAirlines.toString()
+        UserEntity[user.id].preferredHotelChains= preferredHotelChains.toString()
+
     }
 
     override suspend fun deleteUser(id: Int) = dbQuery {

@@ -20,4 +20,8 @@ class AirlineDAOFacadeImpl : AirlineDAOFacade {
     override suspend fun getAirline(iata: String): Airline? = dbQuery {
         AirlineEntity.find { Airlines.iataCode eq iata }.singleOrNull()?.toAirline()
     }
+
+    override suspend fun getAllAirlines(): List<Airline> = dbQuery {
+        AirlineEntity.all().map(AirlineEntity::toAirline)
+    }
 }

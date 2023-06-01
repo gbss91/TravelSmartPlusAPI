@@ -1,8 +1,8 @@
-package com.travelsmartplus.services
+package com.travelsmartplus.apis
 
 import com.travelsmartplus.models.requests.BookingSearchRequest
-import com.travelsmartplus.services.Endpoints.SEARCH_FLIGHT
-import com.travelsmartplus.services.apiResponses.AmadeusFlightOffersResponse
+import com.travelsmartplus.apis.Endpoints.SEARCH_FLIGHT
+import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
  * @throws IllegalStateException if there is an error retrieving flights or the API response indicates failure.
  */
 
-class FlightBookingApi {
+class FlightApi {
     private val client = HttpClientFactory.createHttpClient()
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -36,7 +36,6 @@ class FlightBookingApi {
                     parameters.append("travelClass", bookingSearchRequest.travelClass)
                     parameters.append("nonStop", bookingSearchRequest.nonStop.toString())
                     parameters.append("currencyCode", "EUR")
-                    parameters.append("maxPrice", 1500.toString())
                     parameters.append("max", 20.toString())
                 }
                 headers {

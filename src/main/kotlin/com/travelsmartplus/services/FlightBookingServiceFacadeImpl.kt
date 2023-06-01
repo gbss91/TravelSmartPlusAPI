@@ -1,11 +1,13 @@
 package com.travelsmartplus.services
 
+import com.travelsmartplus.apis.AmadeusAuthenticationApi
+import com.travelsmartplus.apis.FlightApi
 import com.travelsmartplus.dao.airport.AirportDAOFacadeImpl
 import com.travelsmartplus.models.Flight
 import com.travelsmartplus.models.FlightBooking
 import com.travelsmartplus.models.FlightSegment
 import com.travelsmartplus.models.requests.BookingSearchRequest
-import com.travelsmartplus.services.apiResponses.AmadeusFlightOffersResponse
+import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
 import io.ktor.server.plugins.*
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
@@ -16,19 +18,19 @@ import kotlin.time.Duration
  */
 
 class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
-    private val flightApi: FlightBookingApi = FlightBookingApi()
+    private val flightApi: FlightApi = FlightApi()
 
     override suspend fun getFlights(bookingSearchRequest: BookingSearchRequest): List<FlightBooking> {
         try {
             // Get token
-            val token = AmadeusAuthentication().call()
+            val token = AmadeusAuthenticationApi().call()
 
             // Get Flight Data and parse it into Flight Bookings
             val flightOffersResponse = flightApi.getFlights(token, bookingSearchRequest)
             return createFlightBookingsFromResponse(flightOffersResponse, bookingSearchRequest)
 
         } catch (e: IllegalStateException) {
-            println(e.message)
+            e.printStackTrace()
             return emptyList()
         } catch (e: Exception) {
             e.printStackTrace()

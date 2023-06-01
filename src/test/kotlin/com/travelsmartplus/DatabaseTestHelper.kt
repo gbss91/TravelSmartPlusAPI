@@ -1,9 +1,6 @@
 package com.travelsmartplus
 
-import com.travelsmartplus.fixtures.FlightFixtures
-import com.travelsmartplus.fixtures.HotelFixtures
-import com.travelsmartplus.fixtures.OrgFixture
-import com.travelsmartplus.fixtures.UserFixture
+import com.travelsmartplus.fixtures.*
 import com.travelsmartplus.models.*
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.responses.AuthResponse
@@ -31,15 +28,31 @@ import kotlin.time.toJavaDuration
 object DatabaseTestHelper {
     fun setup() {
         TestDatabaseFactory.init()
+
+        // Create mock data
+        val bookings = BookingFixtures.createMockBookings()
+
         // Add test data
-        transaction() {
+        transaction {
 
             Orgs.batchInsert(OrgFixture.orgs) {org ->
                 this[Orgs.orgName] = org.orgName
                 this[Orgs.duns] = org.duns
             }
 
-            Airports.batchInsert(FlightFixtures.airports) { airport ->
+            Users.batchInsert(UserFixtures.users) { user ->
+                this[Users.orgId] = OrgEntity[user.orgId].id
+                this[Users.firstName] = user.firstName
+                this[Users.lastName] = user.lastName
+                this[Users.email] = user.email
+                this[Users.admin] = user.admin
+                this[Users.password] = user.password
+                this[Users.salt] = user.salt
+                this[Users.preferredAirlines] = user.preferredAirlines.toString()
+                this[Users.preferredHotelChains] = user.preferredHotelChains.toString()
+            }
+
+            Airports.batchInsert(AirportFixtures.airports) { airport ->
                 this[Airports.airportName] = airport.airportName
                 this[Airports.city] = airport.city
                 this[Airports.country] = airport.country
@@ -49,17 +62,15 @@ object DatabaseTestHelper {
                 this[Airports.longitude] = airport.longitude
             }
 
-            Users.batchInsert(UserFixture.users) { user ->
-                this[Users.orgId] = OrgEntity[user.orgId].id
-                this[Users.firstName] = user.firstName
-                this[Users.lastName] = user.lastName
-                this[Users.email] = user.email
-                this[Users.admin] = user.admin
-                this[Users.password] = user.password
-                this[Users.salt] = user.salt
+            Airlines.batchInsert(AirlineFixtures.airlines) {airline ->
+                this[Airlines.id] = airline.id
+                this[Airlines.airlineName] = airline.airlineName
+                this[Airlines.iataCode] = airline.iataCode
+                this[Airlines.icaoCode] = airline.icaoCode
             }
 
-            HotelBookings.batchInsert(HotelFixtures.hotelBookings) { hotelBooking ->
+            val hotelBookings = bookings.flatMap { listOf(it.hotelBooking) }.filterNotNull()
+            HotelBookings.batchInsert(hotelBookings) { hotelBooking ->
                 this[HotelBookings.hotelName] = hotelBooking.hotelName
                 this[HotelBookings.address] = hotelBooking.address
                 this[HotelBookings.checkInDate] = hotelBooking.checkInDate.toJavaLocalDate()
@@ -70,7 +81,8 @@ object DatabaseTestHelper {
                 this[HotelBookings.longitude] = hotelBooking.longitude
             }
 
-            FlightBookings.batchInsert(FlightFixtures.flightBookings) { booking ->
+            val flightBookings = bookings.flatMap { listOf(it.flightBooking) }
+            FlightBookings.batchInsert(flightBookings) { booking ->
                 this[FlightBookings.bookingReference] = booking.bookingReference
                 this[FlightBookings.oneWay] = booking.oneWay
                 this[FlightBookings.originCity] = booking.originCity
@@ -80,14 +92,20 @@ object DatabaseTestHelper {
                 this[FlightBookings.totalPrice] = booking.totalPrice
             }
 
-            FlightSegments.batchInsert(FlightFixtures.flightSegments) { segment ->
+            val flightSegments = bookings.flatMap { it.flightBooking.segments}
+            FlightSegments.batchInsert(flightSegments) { segment ->
                 this[FlightSegments.flightBookingId] = FlightBookingEntity[1].id
                 this[FlightSegments.direction] = segment.direction
                 this[FlightSegments.duration] = segment.duration.toJavaDuration()
                 this[FlightSegments.stops] = segment.stops
             }
 
-            Flights.batchInsert(FlightFixtures.flights) {flight ->
+            val flights = bookings.flatMap { booking ->
+                booking.flightBooking.segments.flatMap { segment ->
+                    segment.flights
+                }
+            }
+            Flights.batchInsert(flights) {flight ->
                 this[Flights.flightSegmentId] = FlightSegmentEntity[1].id
                 this[Flights.departureIataCode] = flight.departureAirport.iataCode
                 this[Flights.departureTime] = flight.departureTime.toJavaLocalDateTime()
@@ -108,9 +126,11 @@ object DatabaseTestHelper {
             FlightSegments.deleteAll()
             Flights.deleteAll()
             Airports.deleteAll()
+            Airlines.deleteAll()
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE airports_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE airlines_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE hotelbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")

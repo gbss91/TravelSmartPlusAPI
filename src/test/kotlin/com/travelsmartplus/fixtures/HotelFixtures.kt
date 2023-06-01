@@ -1,21 +1,39 @@
 package com.travelsmartplus.fixtures
 
 import com.travelsmartplus.models.HotelBooking
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.datetime.LocalDate
 import java.math.BigDecimal
+import kotlin.random.Random
+
 
 object HotelFixtures {
-    val hotelBookings = listOf(
-        HotelBooking(
-            id = 1,
-            hotelName = "Radisson Hotel",
-            address = "123 Main St, Los Angeles, USA",
-            checkInDate = LocalDate(2023, 6, 1),
-            checkOutDate = LocalDate(2023, 6, 5),
-            rate = BigDecimal("99.99"),
-            totalPrice = BigDecimal("399.96"),
-            latitude = 37.7749,
-            longitude = -122.4194
-        )
-    )
+
+    fun createMockHotelBooking(
+        checkInDate: LocalDate,
+        checkOutDate: LocalDate
+    ): HotelBooking {
+        val hotelBooking = mockk<HotelBooking>()
+
+        // Generate random rate between 50 and 300
+        val rate = BigDecimal.valueOf(Random.nextDouble(50.0, 300.0))
+
+        // Generate total price
+        val durationOfStay = checkOutDate.dayOfYear - checkInDate.dayOfYear
+        val totalPrice = rate * BigDecimal.valueOf(durationOfStay.toLong())
+
+        // Configure properties of mock hotel booking
+        every { hotelBooking.hotelName } returns "Test Hotel"
+        every { hotelBooking.address } returns "Address 123 St"
+        every { hotelBooking.checkInDate } returns checkInDate
+        every { hotelBooking.checkOutDate } returns checkOutDate
+        every { hotelBooking.rate } returns rate
+        every { hotelBooking.totalPrice } returns totalPrice
+        every { hotelBooking.latitude } returns 37.7749
+        every { hotelBooking.longitude } returns -122.4194
+
+        return hotelBooking
+    }
+
 }

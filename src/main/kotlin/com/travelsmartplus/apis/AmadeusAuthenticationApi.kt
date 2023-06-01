@@ -1,6 +1,6 @@
-package com.travelsmartplus.services
+package com.travelsmartplus.apis
 
-import com.travelsmartplus.services.Endpoints.AMADEUS_TEST_AUTH
+import com.travelsmartplus.apis.Endpoints.AMADEUS_TEST_AUTH
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.forms.*
@@ -16,7 +16,7 @@ import kotlinx.serialization.json.jsonObject
  * @throws IllegalStateException if there is an error retrieving token or the API response indicates failure.
  */
 
-class AmadeusAuthentication {
+class AmadeusAuthenticationApi {
 
     private val amadeusKey = System.getenv("AMADEUS_KEY")
     private val amadeusSecret = System.getenv("AMADEUS_SECRET")

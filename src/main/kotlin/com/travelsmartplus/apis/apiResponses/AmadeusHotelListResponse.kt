@@ -1,4 +1,4 @@
-package com.travelsmartplus.services.apiResponses
+package com.travelsmartplus.apis.apiResponses
 
 import kotlinx.serialization.Serializable
 

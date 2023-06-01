@@ -17,7 +17,11 @@ data class User(
     val email: String,
     val admin: Boolean,
     val password: String,
-    val salt: String
+    val salt: String,
+    val accountSetup: Boolean,
+    val preferredAirlines: Set<String>? = null,
+    val preferredHotelChains: Set<String>? = null
+
 )
 
 // Table
@@ -29,6 +33,9 @@ object Users : IntIdTable() {
     val admin = bool("admin")
     val password = varchar("password", 355)
     val salt = varchar("salt", 100)
+    val accountSetup = bool("account_setup")
+    val preferredAirlines = varchar("preferred_airlines", 50).nullable()
+    val preferredHotelChains = varchar("preferred_hotels", 50).nullable()
 }
 
 // Entity - Represents row in table
@@ -41,7 +48,10 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
     var admin by Users.admin
     var password by Users.password
     var salt by Users.salt
+    var accountSetup by Users.accountSetup
+    var preferredAirlines by Users.preferredAirlines
+    var preferredHotelChains by Users.preferredHotelChains
 }
 
 // Transform entity to data class
-fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, admin, password, salt)
+fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, admin, password, salt, accountSetup, preferredAirlines?.split(",")?.toSet(), preferredHotelChains?.split(",")?.toSet())

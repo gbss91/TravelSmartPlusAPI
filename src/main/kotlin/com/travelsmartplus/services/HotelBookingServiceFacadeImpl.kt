@@ -1,11 +1,12 @@
 package com.travelsmartplus.services
 
+import com.travelsmartplus.apis.AmadeusAuthenticationApi
+import com.travelsmartplus.apis.HotelApi
 import com.travelsmartplus.models.HotelBooking
 import com.travelsmartplus.models.requests.BookingSearchRequest
-import com.travelsmartplus.services.apiResponses.AmadeusHotelListResponse
-import com.travelsmartplus.services.apiResponses.AmadeusHotelOffersResponse
+import com.travelsmartplus.apis.apiResponses.AmadeusHotelListResponse
+import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
 import kotlinx.datetime.toLocalDate
-import kotlinx.serialization.json.Json
 
 /**
  * Implementation of the [HotelBookingServiceFacade] interface. Handles data processing logic for API responses.
@@ -14,12 +15,12 @@ import kotlinx.serialization.json.Json
 
 class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
 
-    private val hotelApi : HotelBookingApi = HotelBookingApi()
+    private val hotelApi : HotelApi = HotelApi()
 
     override suspend fun getHotels(bookingSearchRequest: BookingSearchRequest): List<HotelBooking> {
         try {
             // Get a new authorisation token
-            val token = AmadeusAuthentication().call()
+            val token = AmadeusAuthenticationApi().call()
 
             // Get list with the hotel IDs in the city
             val hotelListResponse = hotelApi.getHotelList(token, bookingSearchRequest)
@@ -34,7 +35,7 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
             // Process calls for each batch
             for (batch in batches) {
                 val hotelOffersResponse = hotelApi.getHotelOffers(token, batch, bookingSearchRequest)
-                val batchHotelBookings = createHotelBookingFromResponse(hotelOffersResponse, bookingSearchRequest)
+                val batchHotelBookings = createHotelBookingFromResponse(hotelOffersResponse)
                 hotelBookings.addAll(batchHotelBookings)
             }
 
@@ -56,10 +57,12 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
     }
 
     private fun createHotelBookingFromResponse(
-        response: AmadeusHotelOffersResponse,
-        bookingSearchRequest: BookingSearchRequest
+        response: AmadeusHotelOffersResponse
     ): List<HotelBooking> {
         return response.data.map { hotelOffer ->
+
+            val nights = hotelOffer.offers[0].checkOutDate.toLocalDate().dayOfYear - hotelOffer.offers[0].checkInDate.toLocalDate().dayOfYear
+            val totalPrice = hotelOffer.offers[0].price.total.toBigDecimal() * nights.toBigDecimal()
 
             // Create hotel booking
             HotelBooking(
@@ -67,8 +70,8 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
                 address = hotelOffer.hotel.latitude.toString(),
                 checkInDate = hotelOffer.offers[0].checkInDate.toLocalDate(),
                 checkOutDate = hotelOffer.offers[0].checkOutDate.toLocalDate(),
-                rate = hotelOffer.offers[0].price!!.total!!.toBigDecimal(),
-                totalPrice = hotelOffer.offers[0].price!!.total!!.toBigDecimal(),
+                rate = hotelOffer.offers[0].price.total.toBigDecimal(),
+                totalPrice = totalPrice,
                 latitude = hotelOffer.hotel.latitude!!,
                 longitude = hotelOffer.hotel.longitude!!
             )

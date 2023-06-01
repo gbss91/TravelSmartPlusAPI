@@ -38,7 +38,7 @@ fun Route.userRoutes() {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw NotFoundException()
                 val user = call.receive<User>()
-                dao.editUser(id, user.firstName, user.lastName, user.email, user.admin, user.password, user.salt)
+                dao.editUser(id, user.firstName, user.lastName, user.email, user.admin, user.password, user.salt, user.accountSetup, user.preferredAirlines, user.preferredHotelChains)
                 call.respond(HttpStatusCode.Created)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, FAILED_EDIT_USER)

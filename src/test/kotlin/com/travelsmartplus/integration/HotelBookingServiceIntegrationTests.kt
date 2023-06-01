@@ -32,11 +32,12 @@ class HotelBookingServiceIntegrationTests {
             oneWay = false,
             nonStop = false,
             origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("LAX")!!,
+            destination = airportDao.getAirport("JFK")!!,
             departureDate = LocalDate(2023, 6, 5),
             returnDate = LocalDate(2023, 6, 10),
             adultsNumber = 1,
             travelClass = "ECONOMY",
+            hotel = true,
             checkInDate =  LocalDate(2023, 6, 5),
             checkOutDate = LocalDate(2023, 6, 10)
         )
@@ -52,11 +53,12 @@ class HotelBookingServiceIntegrationTests {
             oneWay = false,
             nonStop = false,
             origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("LAX")!!,
+            destination = airportDao.getAirport("JFK")!!,
             departureDate = LocalDate(2023, 11, 5),
             returnDate = LocalDate(2023, 11, 10),
             adultsNumber = 1,
             travelClass = "ECONOMY",
+            hotel = true,
             checkInDate =  LocalDate(2023, 11, 5),
             checkOutDate = LocalDate(2023, 11, 3) // Wrong date
         )

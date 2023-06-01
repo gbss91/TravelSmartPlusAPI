@@ -67,7 +67,8 @@ fun Route.authRoutes() {
                 email = request.email,
                 admin = true,  // First user is always admin
                 password = saltedHash.hash,
-                salt = saltedHash.salt
+                salt = saltedHash.salt,
+                accountSetup = true
             )
             userDAO.addUser(user) ?: return@post call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
             call.respond(HttpStatusCode.Created)
@@ -102,7 +103,7 @@ fun Route.authRoutes() {
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.sessions.set(UserSession(userId = user.id))
-                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken))
+                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup))
             } else {
                 call.respond(HttpStatusCode.Unauthorized, INVALID_CREDENTIALS)
             }

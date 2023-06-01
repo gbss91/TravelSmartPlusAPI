@@ -1,5 +1,6 @@
 package com.travelsmartplus.models.responses
 
+import com.travelsmartplus.models.Booking
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,10 +8,12 @@ import kotlinx.serialization.Serializable
  * @author Gabriel Salas
  * @property token The JWT authentication token.
  * @property refreshToken The refresh token for obtaining new authentication tokens.
+ * @property accountSetup Identify new account that may require initial setup
  * */
 
 @Serializable
 data class AuthResponse(
     val token: String,
-    val refreshToken: String
+    val refreshToken: String,
+    val accountSetup: Boolean? = false
 )

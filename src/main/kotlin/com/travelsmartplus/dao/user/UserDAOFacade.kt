@@ -7,6 +7,6 @@ interface UserDAOFacade {
     suspend fun allUsers(orgId: Int): List<User>
     suspend fun getUserByEmail(email: String): User?
     suspend fun addUser(user: User): User?
-    suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, admin: Boolean, password: String, salt: String)
+    suspend fun editUser(id: Int, firstName: String, lastName: String, email: String, admin: Boolean, password: String, salt: String, accountSetup: Boolean, preferredAirlines: Set<String>?, preferredHotelChains: Set<String>?)
     suspend fun deleteUser(id: Int)
 }

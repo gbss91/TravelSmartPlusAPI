@@ -24,11 +24,11 @@ data class Booking(
     val departureDate: LocalDate,
     val returnDate: LocalDate?,
     val flightBooking: FlightBooking,
-    val hotelBooking: HotelBooking?,
+    var hotelBooking: HotelBooking?,
     val adultsNumber: Int,
     val status: String,
     @Serializable(with = BigDecimalSerializer::class)
-    val totalPrice: BigDecimal
+    var totalPrice: BigDecimal
 )
 
 // Table

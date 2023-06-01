@@ -53,7 +53,8 @@ fun Route.adminRoutes() {
                 email = request.email,
                 admin = request.admin,
                 password = saltedHash.hash,
-                salt = saltedHash.salt
+                salt = saltedHash.salt,
+                accountSetup = request.accountSetup
             )
             val isUserAdded = userDAO.addUser(user)
             if (isUserAdded == null) {

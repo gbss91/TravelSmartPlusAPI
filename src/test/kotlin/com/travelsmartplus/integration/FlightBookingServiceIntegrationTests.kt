@@ -32,18 +32,18 @@ class FlightBookingServiceIntegrationTests {
             oneWay = false,
             nonStop = true,
             origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("LAX")!!,
+            destination = airportDao.getAirport("JFK")!!,
             departureDate = LocalDate(2023, 11, 5),
             returnDate = LocalDate(2023, 11, 10),
             adultsNumber = 1,
             travelClass = "ECONOMY",
+            hotel = true,
             checkInDate =  LocalDate(2023, 11, 5),
             checkOutDate = LocalDate(2023, 11, 10)
         )
 
         val flightBookings = flightService.getFlights(bookingSearchRequest)
         assertEquals(true, flightBookings.isNotEmpty())
-        println(flightBookings)
     }
 
     @Test
@@ -52,11 +52,12 @@ class FlightBookingServiceIntegrationTests {
             oneWay = false,
             nonStop = true,
             origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("LAX")!!,
+            destination = airportDao.getAirport("JFK")!!,
             departureDate = LocalDate(2023, 11, 5),
             returnDate = LocalDate(2023, 11, 10),
             adultsNumber = 1,
             travelClass = "WRONG CLASS", // Wrong class - Throw error
+            hotel = true,
             checkInDate =  LocalDate(2023, 11, 5),
             checkOutDate = LocalDate(2023, 11, 10)
         )

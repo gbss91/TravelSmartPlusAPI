@@ -1,10 +1,10 @@
-package com.travelsmartplus.services
+package com.travelsmartplus.apis
 
 import com.travelsmartplus.models.requests.BookingSearchRequest
-import com.travelsmartplus.services.Endpoints.HOTEL_LIST
-import com.travelsmartplus.services.Endpoints.SEARCH_HOTEL
-import com.travelsmartplus.services.apiResponses.AmadeusHotelListResponse
-import com.travelsmartplus.services.apiResponses.AmadeusHotelOffersResponse
+import com.travelsmartplus.apis.Endpoints.HOTEL_LIST
+import com.travelsmartplus.apis.Endpoints.SEARCH_HOTEL
+import com.travelsmartplus.apis.apiResponses.AmadeusHotelListResponse
+import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -21,7 +21,7 @@ import kotlinx.serialization.json.Json
  * @throws IllegalStateException if there is an error retrieving hotels or the API response indicates failure.
  */
 
-class HotelBookingApi {
+class HotelApi {
     private val client = HttpClientFactory.createHttpClient()
     private val json = Json { ignoreUnknownKeys = true }
 

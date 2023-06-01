@@ -45,7 +45,7 @@ class HotelIntegrationTests {
         )
 
         val hotel = dao.addHotelBooking(newHotelBooking)
-        assertEquals(2, hotel)
+        assertEquals(11, hotel)
     }
 
     @Test
