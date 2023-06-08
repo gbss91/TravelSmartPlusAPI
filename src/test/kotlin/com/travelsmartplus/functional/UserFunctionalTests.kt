@@ -2,7 +2,8 @@ package com.travelsmartplus.functional
 
 import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.User
-import com.travelsmartplus.module
+import com.travelsmartplus.models.requests.SetupAccountRequest
+import com.travelsmartplus.testModule
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -31,7 +32,7 @@ class UserFunctionalTests {
 
     @Test
     fun `create new user`() = testApplication {
-        application { module() }
+        application { testModule() }
         val user = User(
             orgId = 1,
             firstName = "Sara",
@@ -39,7 +40,8 @@ class UserFunctionalTests {
             email = "sara@test.com",
             admin = true,
             password = "myPass123",
-            salt = ""
+            salt = "123",
+            accountSetup = true
         )
         val request = client.post("api/user") {
             header(HttpHeaders.Authorization, "Bearer $token")
@@ -51,7 +53,7 @@ class UserFunctionalTests {
 
     @Test
     fun `get users`() = testApplication {
-        application { module() }
+        application { testModule() }
 
         // Test get all users
         val response = client.get("api/users/1") {
@@ -70,7 +72,7 @@ class UserFunctionalTests {
 
     @Test
     fun `edit existing user`() = testApplication {
-        application { module() }
+        application { testModule() }
         val editUser = User(
             orgId = 1,
             firstName = "Paula",
@@ -78,7 +80,8 @@ class UserFunctionalTests {
             email = "sara@test.com",
             admin = true,
             password = "123456",
-            salt = "123"
+            salt = "123",
+            accountSetup = true
         )
         val request = client.post("api/user/1") {
             header(HttpHeaders.Authorization, "Bearer $token")
@@ -90,10 +93,22 @@ class UserFunctionalTests {
 
     @Test
     fun `successfully delete an user`() = testApplication {
-        application { module() }
+        application { testModule() }
         val request = client.delete("api/user/1") {
             header(HttpHeaders.Authorization, "Bearer $token")
         }
         assertEquals(HttpStatusCode.OK, request.status)
+    }
+
+    @Test
+    fun `setup account`() = testApplication {
+        application { testModule() }
+        val setupAccountRequest = SetupAccountRequest("MyNewPass1234!", setOf("AA", "EI"), setOf("MC", "AC"))
+        val request = client.post("api/user/1/setup") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(Json.encodeToString(setupAccountRequest))
+        }
+        assertEquals(HttpStatusCode.Created, request.status)
     }
 }

@@ -3,7 +3,6 @@ package com.travelsmartplus.unit
 import com.travelsmartplus.models.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
@@ -23,7 +22,8 @@ class BookingTests {
             email = "john.doe@example.com",
             admin = false,
             password = "password",
-            salt = "salt"
+            salt = "salt",
+            accountSetup = true
         )
 
         val origin = Airport(

@@ -2,10 +2,10 @@ package com.travelsmartplus.services
 
 import com.travelsmartplus.apis.AmadeusAuthenticationApi
 import com.travelsmartplus.apis.HotelApi
-import com.travelsmartplus.models.HotelBooking
-import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.apis.apiResponses.AmadeusHotelListResponse
 import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
+import com.travelsmartplus.models.HotelBooking
+import com.travelsmartplus.models.requests.BookingSearchRequest
 import kotlinx.datetime.toLocalDate
 
 /**
@@ -42,7 +42,7 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
             return hotelBookings
 
         } catch (e: IllegalStateException) {
-            println(e.message)
+            e.printStackTrace()
             return emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -67,6 +67,7 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
             // Create hotel booking
             HotelBooking(
                 hotelName = hotelOffer.hotel.name,
+                hotelChainCode = hotelOffer.hotel.chainCode,
                 address = hotelOffer.hotel.latitude.toString(),
                 checkInDate = hotelOffer.offers[0].checkInDate.toLocalDate(),
                 checkOutDate = hotelOffer.offers[0].checkOutDate.toLocalDate(),

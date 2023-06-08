@@ -32,7 +32,7 @@ data class Booking(
 )
 
 // Table
-object Bookings: IntIdTable() {
+object Bookings : IntIdTable() {
     val userId = reference("user_id", Users.id, onDelete = ReferenceOption.CASCADE)
     val orgId = reference("org_id", Orgs.id, onDelete = ReferenceOption.CASCADE)
     val originIata = varchar("origin_city", 3)
@@ -47,8 +47,9 @@ object Bookings: IntIdTable() {
 }
 
 // Entity - Represents row in table
-class BookingEntity(id: EntityID<Int>): IntEntity(id) {
-    companion object: IntEntityClass<BookingEntity>(Bookings)
+class BookingEntity(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<BookingEntity>(Bookings)
+
     var userId by UserEntity referencedOn Bookings.userId
     var orgId by OrgEntity referencedOn Bookings.orgId
     var originIata by Bookings.originIata
@@ -70,6 +71,18 @@ fun BookingEntity.toBooking(): Booking {
     val flightBooking = FlightBookingEntity.findById(flightBookingId.id)!!.toFlightBooking()
     val hotelBooking = hotelBookingId?.let { HotelBookingEntity.findById(it.id)?.toHotelBooking() }
 
-    return Booking(id.value, user, origin, destination, departureDate.toKotlinLocalDate(), returnDate?.toKotlinLocalDate(), flightBooking, hotelBooking, adultsNumber, status, totalPrice)
+    return Booking(
+        id.value,
+        user,
+        origin,
+        destination,
+        departureDate.toKotlinLocalDate(),
+        returnDate?.toKotlinLocalDate(),
+        flightBooking,
+        hotelBooking,
+        adultsNumber,
+        status,
+        totalPrice
+    )
 
 }

@@ -2,9 +2,11 @@ package com.travelsmartplus.routes
 
 import com.travelsmartplus.dao.org.OrgDAOFacadeImpl
 import com.travelsmartplus.models.Org
+import com.travelsmartplus.models.responses.HttpResponses
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_ORG
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_DELETE_ORG
 import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
+import com.travelsmartplus.models.responses.HttpResponses.NOT_FOUND
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
@@ -32,6 +34,7 @@ fun Route.orgRoutes() {
             }
             call.respond(HttpStatusCode.Created, org.id!!)
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_ORG)
         }
     }
@@ -40,9 +43,15 @@ fun Route.orgRoutes() {
         // Get Org
         get {
             try {
-                val id = call.parameters["id"]?.toIntOrNull() ?: throw NotFoundException()
+                val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
                 val org = dao.getOrg(id) ?: throw NotFoundException()
                 call.respond(HttpStatusCode.OK, org)
+            } catch (e: BadRequestException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
+            } catch (e: NotFoundException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.NotFound, NOT_FOUND)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, INTERNAL_SERVER_ERROR)
             }
@@ -51,10 +60,17 @@ fun Route.orgRoutes() {
         // Delete Org
         delete {
             try {
-                val id = call.parameters["id"]?.toIntOrNull() ?: throw NotFoundException()
+                val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
                 dao.deleteOrg(id)
                 call.respond(HttpStatusCode.OK)
+            } catch (e: BadRequestException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
+            } catch (e: NotFoundException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.NotFound, NOT_FOUND)
             } catch (e: Exception) {
+                e.printStackTrace()
                 call.respond(HttpStatusCode.InternalServerError, FAILED_DELETE_ORG)
             }
         }

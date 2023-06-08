@@ -5,5 +5,5 @@ import com.travelsmartplus.models.User
 import com.travelsmartplus.models.requests.BookingSearchRequest
 
 interface BookingServiceFacade {
-    suspend fun new(bookingSearchRequest: BookingSearchRequest, previousBookings: List<Booking>, user: User): Booking?
+    suspend fun newPredictedBooking(bookingSearchRequest: BookingSearchRequest, user: User): Booking?
 }

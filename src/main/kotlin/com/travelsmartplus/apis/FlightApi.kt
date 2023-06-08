@@ -1,13 +1,12 @@
 package com.travelsmartplus.apis
 
-import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.apis.Endpoints.SEARCH_FLIGHT
 import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
+import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 /**
@@ -30,7 +29,10 @@ class FlightApi {
                     parameters.append("destinationLocationCode", bookingSearchRequest.destination.iataCode)
                     parameters.append("departureDate", bookingSearchRequest.departureDate.toString())
                     if (!bookingSearchRequest.oneWay) {
-                        parameters.append("returnDate", bookingSearchRequest.returnDate.toString()) // Only for return bookings
+                        parameters.append(
+                            "returnDate",
+                            bookingSearchRequest.returnDate.toString()
+                        ) // Only for return bookings
                     }
                     parameters.append("adults", bookingSearchRequest.adultsNumber.toString())
                     parameters.append("travelClass", bookingSearchRequest.travelClass)

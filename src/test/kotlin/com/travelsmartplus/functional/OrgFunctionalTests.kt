@@ -2,7 +2,7 @@ package com.travelsmartplus.functional
 
 import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.Org
-import com.travelsmartplus.module
+import com.travelsmartplus.testModule
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -31,7 +31,7 @@ class OrgFunctionalTests {
 
     @Test
     fun `create org`() = testApplication {
-        application { module() }
+        application { testModule() }
         val org = Org(orgName = "My Org Inc", duns = 123456)
         val request = client.post("api/org") {
             header(HttpHeaders.Authorization, "Bearer $token")
@@ -43,7 +43,7 @@ class OrgFunctionalTests {
 
     @Test
     fun `get org using id`() = testApplication {
-        application { module() }
+        application { testModule() }
         val response = client.get("api/org/1") {
             header(HttpHeaders.Authorization, "Bearer $token")
         }
@@ -53,7 +53,7 @@ class OrgFunctionalTests {
 
     @Test
     fun `successfully delete org`() = testApplication {
-        application { module() }
+        application { testModule() }
         val request = client.delete("api/org/1") {
             header(HttpHeaders.Authorization, "Bearer $token")
         }

@@ -1,9 +1,9 @@
 package com.travelsmartplus.unit
 
+import com.travelsmartplus.models.Hotel
 import com.travelsmartplus.models.HotelBooking
 import junit.framework.TestCase.assertEquals
 import kotlinx.datetime.LocalDate
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
@@ -29,5 +29,18 @@ class HotelTests {
         val deserialized = Json.decodeFromString<HotelBooking>(json)
 
         assertEquals(booking, deserialized)
+    }
+
+    fun `create new hotel chain`() {
+        val hotel = Hotel(
+            hotelChain = "Crowne Plaza",
+            code = "CP"
+        )
+
+        // Test Serialization
+        val json = Json.encodeToString(hotel)
+        val deserialized = Json.decodeFromString<Hotel>(json)
+
+        assertEquals(hotel, deserialized)
     }
 }

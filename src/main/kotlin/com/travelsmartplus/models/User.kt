@@ -12,16 +12,15 @@ import org.jetbrains.exposed.sql.ReferenceOption
 data class User(
     val id: Int? = 0,
     val orgId: Int,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val admin: Boolean,
-    val password: String,
-    val salt: String,
-    val accountSetup: Boolean,
-    val preferredAirlines: Set<String>? = null,
-    val preferredHotelChains: Set<String>? = null
-
+    var firstName: String,
+    var lastName: String,
+    var email: String,
+    var admin: Boolean,
+    var password: String,
+    var salt: String,
+    var accountSetup: Boolean,
+    var preferredAirlines: Set<String>? = null,
+    var preferredHotelChains: Set<String>? = null
 )
 
 // Table
@@ -54,4 +53,20 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
 }
 
 // Transform entity to data class
-fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, admin, password, salt, accountSetup, preferredAirlines?.split(",")?.toSet(), preferredHotelChains?.split(",")?.toSet())
+fun UserEntity.toUser(): User {
+    val preferredAirlinesSet = preferredAirlines?.split(",")?.toSet()
+    val preferredHotelChainsSet = preferredHotelChains?.split(",")?.toSet()
+    return User(
+        id.value,
+        orgId.id.value,
+        firstName,
+        lastName,
+        email,
+        admin,
+        password,
+        salt,
+        accountSetup,
+        preferredAirlinesSet,
+        preferredHotelChainsSet
+    )
+}

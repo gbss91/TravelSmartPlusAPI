@@ -2,6 +2,7 @@ package com.travelsmartplus.routes
 
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.User
+import com.travelsmartplus.models.responses.HttpResponses
 import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_USER
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_USER
 import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
@@ -25,10 +26,14 @@ fun Route.adminRoutes() {
     // Get all users
     get("/users/{orgId}") {
         try {
-            val orgId = call.parameters["orgId"]?.toIntOrNull() ?: throw NotFoundException()
+            val orgId = call.parameters["orgId"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
             val allUsers = userDAO.allUsers(orgId)
             call.respond(HttpStatusCode.OK, allUsers)
+        } catch (e: BadRequestException) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, INTERNAL_SERVER_ERROR)
         }
     }
@@ -39,10 +44,9 @@ fun Route.adminRoutes() {
             val request = call.receive<User>()
 
             // Validate duplicate user
-            if (userDAO.getUserByEmail(request.email) != null) {
-                call.respond(HttpStatusCode.Conflict, DUPLICATE_USER)
-                return@post
-            }
+            if (userDAO.getUserByEmail(request.email) != null)
+                return@post call.respond(HttpStatusCode.Conflict, DUPLICATE_USER)
+
 
             // Create hash and user
             val saltedHash = hashingService.generate(request.password)
@@ -56,11 +60,8 @@ fun Route.adminRoutes() {
                 salt = saltedHash.salt,
                 accountSetup = request.accountSetup
             )
-            val isUserAdded = userDAO.addUser(user)
-            if (isUserAdded == null) {
-                call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
-                return@post
-            }
+            userDAO.addUser(user) ?: return@post call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
+
             call.respond(HttpStatusCode.Created, user.id!!)
         } catch (e: IllegalArgumentException) {
             call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)

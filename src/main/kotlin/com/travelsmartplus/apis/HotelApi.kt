@@ -1,16 +1,15 @@
 package com.travelsmartplus.apis
 
-import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.apis.Endpoints.HOTEL_LIST
 import com.travelsmartplus.apis.Endpoints.SEARCH_HOTEL
 import com.travelsmartplus.apis.apiResponses.AmadeusHotelListResponse
 import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
+import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.network.sockets.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 /**
@@ -52,7 +51,11 @@ class HotelApi {
     }
 
     // Search hotel offers using hotel Ids. This includes the hotel details and rate
-    suspend fun getHotelOffers(token: String, hotelIds: List<String>, bookingSearchRequest: BookingSearchRequest): AmadeusHotelOffersResponse {
+    suspend fun getHotelOffers(
+        token: String,
+        hotelIds: List<String>,
+        bookingSearchRequest: BookingSearchRequest
+    ): AmadeusHotelOffersResponse {
         try {
 
             val hotels = hotelIds.joinToString(",")

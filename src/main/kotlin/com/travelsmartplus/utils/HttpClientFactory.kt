@@ -26,7 +26,7 @@ object HttpClientFactory {
                     readTimeout(READ_TIMEOUT)
                 }
             }
-            install (ContentNegotiation) {
+            install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
                     ignoreUnknownKeys = true

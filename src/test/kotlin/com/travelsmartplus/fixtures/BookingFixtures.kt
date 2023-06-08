@@ -1,6 +1,6 @@
 package com.travelsmartplus.fixtures
 
-import com.travelsmartplus.models.*
+import com.travelsmartplus.models.Booking
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.datetime.toKotlinLocalDate
@@ -18,7 +18,7 @@ object BookingFixtures {
         val bookings = mutableListOf<Booking>()
 
 
-        for (i in 1..10) {
+        for (i in 1..6) {
             val booking = mockk<Booking>()
 
             // Generate random total price between 700 and 1500

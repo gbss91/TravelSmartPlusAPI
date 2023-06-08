@@ -1,7 +1,8 @@
 package com.travelsmartplus.integration
 
 import com.travelsmartplus.DatabaseTestHelper
-import com.travelsmartplus.dao.hotel.HotelBookingFacadeImpl
+import com.travelsmartplus.dao.hotel.HotelBookingDAOFacadeImpl
+import com.travelsmartplus.dao.hotel.HotelDAOFacadeImpl
 import com.travelsmartplus.models.HotelBooking
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.LocalDate
@@ -13,7 +14,8 @@ import kotlin.test.assertEquals
 
 class HotelIntegrationTests {
 
-    private val dao = HotelBookingFacadeImpl()
+    private val dao = HotelBookingDAOFacadeImpl()
+    private val hotelChainDAO = HotelDAOFacadeImpl()
 
     @Before
     fun setup() {
@@ -35,6 +37,7 @@ class HotelIntegrationTests {
     fun `add hotel booking`() = runBlocking {
         val newHotelBooking = HotelBooking(
             hotelName = "Crowne Plaza Dublin",
+            hotelChainCode = "CP",
             address = "Northwood Avenue, Dublin, Ireland",
             checkInDate = LocalDate(2023, 11, 1),
             checkOutDate = LocalDate(2023, 11, 5),
@@ -45,7 +48,7 @@ class HotelIntegrationTests {
         )
 
         val hotel = dao.addHotelBooking(newHotelBooking)
-        assertEquals(11, hotel)
+        assertEquals(7, hotel)
     }
 
     @Test
@@ -53,5 +56,11 @@ class HotelIntegrationTests {
         dao.deleteHotelBooking(1)
         val deletedHotelBooking = dao.getHotelBooking(1)
         assertEquals(null, deletedHotelBooking)
+    }
+
+    @Test
+    fun `get all hotel chains`() = runBlocking {
+        val hotelChains = hotelChainDAO.getAllHotels()
+        assertEquals(3, hotelChains.size)
     }
 }

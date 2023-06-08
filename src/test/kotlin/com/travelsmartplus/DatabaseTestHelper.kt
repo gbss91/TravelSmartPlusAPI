@@ -10,7 +10,6 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.batchInsert
@@ -23,7 +22,7 @@ import kotlin.time.toJavaDuration
  * to clear the database after each test. It also provides sign in functionality for tests that required
  * authorisation.
  * @author Gabriel Salas
-*/
+ */
 
 object DatabaseTestHelper {
     fun setup() {
@@ -35,7 +34,7 @@ object DatabaseTestHelper {
         // Add test data
         transaction {
 
-            Orgs.batchInsert(OrgFixture.orgs) {org ->
+            Orgs.batchInsert(OrgFixture.orgs) { org ->
                 this[Orgs.orgName] = org.orgName
                 this[Orgs.duns] = org.duns
             }
@@ -48,6 +47,7 @@ object DatabaseTestHelper {
                 this[Users.admin] = user.admin
                 this[Users.password] = user.password
                 this[Users.salt] = user.salt
+                this[Users.accountSetup] = user.accountSetup
                 this[Users.preferredAirlines] = user.preferredAirlines.toString()
                 this[Users.preferredHotelChains] = user.preferredHotelChains.toString()
             }
@@ -62,16 +62,22 @@ object DatabaseTestHelper {
                 this[Airports.longitude] = airport.longitude
             }
 
-            Airlines.batchInsert(AirlineFixtures.airlines) {airline ->
+            Airlines.batchInsert(AirlineFixtures.airlines) { airline ->
                 this[Airlines.id] = airline.id
                 this[Airlines.airlineName] = airline.airlineName
                 this[Airlines.iataCode] = airline.iataCode
                 this[Airlines.icaoCode] = airline.icaoCode
             }
 
+            Hotels.batchInsert(HotelChainFixtures.hotelChains) { hotelChain ->
+                this[Hotels.hotelChain] = hotelChain.hotelChain
+                this[Hotels.code] = hotelChain.code
+            }
+
             val hotelBookings = bookings.flatMap { listOf(it.hotelBooking) }.filterNotNull()
             HotelBookings.batchInsert(hotelBookings) { hotelBooking ->
                 this[HotelBookings.hotelName] = hotelBooking.hotelName
+                this[HotelBookings.hotelChainCode] = hotelBooking.hotelChainCode
                 this[HotelBookings.address] = hotelBooking.address
                 this[HotelBookings.checkInDate] = hotelBooking.checkInDate.toJavaLocalDate()
                 this[HotelBookings.checkOutDate] = hotelBooking.checkOutDate.toJavaLocalDate()
@@ -92,7 +98,7 @@ object DatabaseTestHelper {
                 this[FlightBookings.totalPrice] = booking.totalPrice
             }
 
-            val flightSegments = bookings.flatMap { it.flightBooking.segments}
+            val flightSegments = bookings.flatMap { it.flightBooking.segments }
             FlightSegments.batchInsert(flightSegments) { segment ->
                 this[FlightSegments.flightBookingId] = FlightBookingEntity[1].id
                 this[FlightSegments.direction] = segment.direction
@@ -105,7 +111,7 @@ object DatabaseTestHelper {
                     segment.flights
                 }
             }
-            Flights.batchInsert(flights) {flight ->
+            Flights.batchInsert(flights) { flight ->
                 this[Flights.flightSegmentId] = FlightSegmentEntity[1].id
                 this[Flights.departureIataCode] = flight.departureAirport.iataCode
                 this[Flights.departureTime] = flight.departureTime.toJavaLocalDateTime()
@@ -127,10 +133,13 @@ object DatabaseTestHelper {
             Flights.deleteAll()
             Airports.deleteAll()
             Airlines.deleteAll()
+            Hotels.deleteAll()
+
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE airports_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE airlines_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE hotels_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE hotelbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")

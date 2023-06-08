@@ -23,8 +23,13 @@ object HotelFixtures {
         val durationOfStay = checkOutDate.dayOfYear - checkInDate.dayOfYear
         val totalPrice = rate * BigDecimal.valueOf(durationOfStay.toLong())
 
+        // Generate random hotel chain code
+        val hotelChainCodes = listOf("HH", "PD", "MC", "JD", "WY")
+        val randomChainCode = hotelChainCodes[Random.nextInt(hotelChainCodes.size)]
+
         // Configure properties of mock hotel booking
         every { hotelBooking.hotelName } returns "Test Hotel"
+        every { hotelBooking.hotelChainCode } returns randomChainCode
         every { hotelBooking.address } returns "Address 123 St"
         every { hotelBooking.checkInDate } returns checkInDate
         every { hotelBooking.checkOutDate } returns checkOutDate
@@ -35,5 +40,4 @@ object HotelFixtures {
 
         return hotelBooking
     }
-
 }

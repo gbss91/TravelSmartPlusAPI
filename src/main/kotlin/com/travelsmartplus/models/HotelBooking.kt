@@ -16,6 +16,7 @@ import java.math.BigDecimal
 data class HotelBooking(
     val id: Int? = 0,
     val hotelName: String,
+    val hotelChainCode: String? = null,
     val address: String,
     val checkInDate: LocalDate,
     val checkOutDate: LocalDate,
@@ -30,6 +31,7 @@ data class HotelBooking(
 // Table
 object HotelBookings: IntIdTable() {
     val hotelName = varchar("hotel_name", 50)
+    val hotelChainCode = varchar("hotel_chain", 5).nullable()
     val address = varchar("address", 100 )
     val checkInDate = date("checkIn_date")
     val checkOutDate = date("checkOut_date")
@@ -43,6 +45,7 @@ object HotelBookings: IntIdTable() {
 class HotelBookingEntity(id: EntityID<Int>): IntEntity(id) {
     companion object: IntEntityClass<HotelBookingEntity>(HotelBookings)
     var hotelName by HotelBookings.hotelName
+    var hotelChainCode by HotelBookings.hotelChainCode
     var address by HotelBookings.address
     var checkInDate by HotelBookings.checkInDate
     var checkOutDate by HotelBookings.checkOutDate
@@ -54,5 +57,5 @@ class HotelBookingEntity(id: EntityID<Int>): IntEntity(id) {
 
 // Transform entity to data class
 fun HotelBookingEntity.toHotelBooking(): HotelBooking = HotelBooking(
-    id.value, hotelName, address, checkInDate.toKotlinLocalDate(), checkOutDate.toKotlinLocalDate(), rate, totalPrice, latitude, longitude
+    id.value, hotelName, hotelChainCode, address, checkInDate.toKotlinLocalDate(), checkOutDate.toKotlinLocalDate(), rate, totalPrice, latitude, longitude
 )

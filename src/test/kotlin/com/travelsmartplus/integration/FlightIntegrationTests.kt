@@ -45,7 +45,7 @@ class FlightIntegrationTests {
     @Test
     fun `get flights by segment`() = runBlocking {
         val flights = flightDao.getFlightsBySegment(1)
-        assertEquals(20, flights.size)
+        assertEquals(12, flights.size)
     }
 
     @Test

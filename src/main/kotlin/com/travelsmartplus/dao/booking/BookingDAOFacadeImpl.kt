@@ -17,11 +17,11 @@ class BookingDAOFacadeImpl : BookingDAOFacade {
     }
 
     override suspend fun getBookingsByUser(userId: Int): List<Booking> = dbQuery {
-        BookingEntity.find { Bookings.userId eq userId}.map { it.toBooking() }
+        BookingEntity.find { Bookings.userId eq userId }.map { it.toBooking() }
     }
 
     override suspend fun getAllBookings(orgId: Int): List<Booking> = dbQuery {
-       BookingEntity.find { Bookings.orgId eq orgId }.map { it.toBooking() }
+        BookingEntity.find { Bookings.orgId eq orgId }.map { it.toBooking() }
     }
 
     override suspend fun addBooking(booking: Booking): Booking = dbQuery {

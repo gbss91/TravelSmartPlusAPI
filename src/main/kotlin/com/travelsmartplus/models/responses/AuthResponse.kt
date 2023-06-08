@@ -1,6 +1,5 @@
 package com.travelsmartplus.models.responses
 
-import com.travelsmartplus.models.Booking
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,5 +14,5 @@ import kotlinx.serialization.Serializable
 data class AuthResponse(
     val token: String,
     val refreshToken: String,
-    val accountSetup: Boolean? = false
+    val accountSetup: Boolean
 )

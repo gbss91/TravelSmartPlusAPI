@@ -2,12 +2,12 @@ package com.travelsmartplus.services
 
 import com.travelsmartplus.apis.AmadeusAuthenticationApi
 import com.travelsmartplus.apis.FlightApi
+import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
 import com.travelsmartplus.dao.airport.AirportDAOFacadeImpl
 import com.travelsmartplus.models.Flight
 import com.travelsmartplus.models.FlightBooking
 import com.travelsmartplus.models.FlightSegment
 import com.travelsmartplus.models.requests.BookingSearchRequest
-import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
 import io.ktor.server.plugins.*
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration
@@ -49,9 +49,11 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
 
                     // Create flights
                     Flight(
-                        departureAirport = AirportDAOFacadeImpl().getAirport(flight.departure.iataCode) ?: throw NotFoundException(),
+                        departureAirport = AirportDAOFacadeImpl().getAirport(flight.departure.iataCode)
+                            ?: throw NotFoundException(),
                         departureTime = flight.departure.at.toLocalDateTime(),
-                        arrivalAirport = AirportDAOFacadeImpl().getAirport(flight.arrival.iataCode) ?: throw NotFoundException(),
+                        arrivalAirport = AirportDAOFacadeImpl().getAirport(flight.arrival.iataCode)
+                            ?: throw NotFoundException(),
                         arrivalTime = flight.arrival.at.toLocalDateTime(),
                         carrierIataCode = flight.carrierCode
                     )

@@ -13,7 +13,7 @@ import io.ktor.server.plugins.*
  */
 
 class FlightBookingDAOFacadeImpl : FlightBookingDAOFacade {
-    override suspend fun getFlightBooking(id: Int): FlightBooking? = dbQuery  {
+    override suspend fun getFlightBooking(id: Int): FlightBooking? = dbQuery {
         FlightBookingEntity.findById(id)?.toFlightBooking()
     }
 

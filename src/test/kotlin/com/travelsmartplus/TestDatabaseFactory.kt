@@ -33,7 +33,8 @@ object TestDatabaseFactory {
                 FlightSegments,
                 FlightBookings,
                 Airports,
-                Airlines
+                Airlines,
+                Hotels
             )
         }
     }

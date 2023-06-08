@@ -8,19 +8,20 @@ import io.ktor.server.plugins.*
 import kotlinx.datetime.toJavaLocalDate
 
 /**
- * Implementation of the [HotelBookingFacade] interface.
+ * Implementation of the [HotelBookingDAOFacade] interface.
  * This class provides methods to get, add and delete hotel booking information from the database.
  * @author Gabriel Salas
  */
 
-class HotelBookingFacadeImpl : HotelBookingFacade {
-    override suspend fun getHotelBooking(id: Int): HotelBooking? = dbQuery  {
+class HotelBookingDAOFacadeImpl : HotelBookingDAOFacade {
+    override suspend fun getHotelBooking(id: Int): HotelBooking? = dbQuery {
         HotelBookingEntity.findById(id)?.toHotelBooking()
     }
 
     override suspend fun addHotelBooking(hotelBooking: HotelBooking): Int = dbQuery {
         val newHotelBooking = HotelBookingEntity.new {
             hotelName = hotelBooking.hotelName
+            hotelChainCode = hotelChainCode
             address = hotelBooking.address
             checkInDate = hotelBooking.checkInDate.toJavaLocalDate()
             checkOutDate = hotelBooking.checkOutDate.toJavaLocalDate()

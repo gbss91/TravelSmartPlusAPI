@@ -2,6 +2,7 @@ package com.travelsmartplus.dao.user
 
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
+import com.travelsmartplus.utils.SaltedHash
 import io.ktor.server.plugins.*
 
 /**
@@ -43,29 +44,26 @@ class UserDAOFacadeImpl : UserDAOFacade {
         }
     }
 
-    override suspend fun editUser(
-        id: Int,
-        firstName: String,
-        lastName: String,
-        email: String,
-        admin: Boolean,
-        password: String,
-        salt: String,
-        accountSetup: Boolean,
-        preferredAirlines: Set<String>?,
-        preferredHotelChains: Set<String>?
-    ) = dbQuery {
-        val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
-        UserEntity[user.id].firstName = firstName
-        UserEntity[user.id].lastName = lastName
-        UserEntity[user.id].email = email
-        UserEntity[user.id].admin = admin
-        UserEntity[user.id].password = password
-        UserEntity[user.id].salt = salt
-        UserEntity[user.id].accountSetup= accountSetup
-        UserEntity[user.id].preferredAirlines= preferredAirlines.toString()
-        UserEntity[user.id].preferredHotelChains= preferredHotelChains.toString()
+    override suspend fun editUser(id: Int, editedUser: User): User = dbQuery {
+        val userEntity = UserEntity.findById(id) ?: throw NotFoundException("User not found")
+        userEntity.apply {
+            firstName = editedUser.firstName
+            lastName = editedUser.lastName
+            email = editedUser.email
+            admin = editedUser.admin
+            password = editedUser.password
+            salt = editedUser.salt
+            accountSetup = editedUser.accountSetup
+            preferredAirlines = editedUser.preferredAirlines.toString()
+            preferredHotelChains = editedUser.preferredHotelChains.toString()
+        }
+        userEntity.toUser()
+    }
 
+    override suspend fun updatePassword(id: Int, newPassword: SaltedHash) = dbQuery {
+        val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
+        user.password = newPassword.hash
+        user.salt = newPassword.salt
     }
 
     override suspend fun deleteUser(id: Int) = dbQuery {
