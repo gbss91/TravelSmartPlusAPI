@@ -35,6 +35,7 @@ object DatabaseTestHelper {
         transaction {
 
             Orgs.batchInsert(OrgFixture.orgs) { org ->
+                this[Orgs.id] = org.id!!
                 this[Orgs.orgName] = org.orgName
                 this[Orgs.duns] = org.duns
             }
@@ -76,6 +77,7 @@ object DatabaseTestHelper {
 
             val hotelBookings = bookings.flatMap { listOf(it.hotelBooking) }.filterNotNull()
             HotelBookings.batchInsert(hotelBookings) { hotelBooking ->
+                this[HotelBookings.id] = hotelBooking.id!!
                 this[HotelBookings.hotelName] = hotelBooking.hotelName
                 this[HotelBookings.hotelChainCode] = hotelBooking.hotelChainCode
                 this[HotelBookings.address] = hotelBooking.address
@@ -89,6 +91,7 @@ object DatabaseTestHelper {
 
             val flightBookings = bookings.flatMap { listOf(it.flightBooking) }
             FlightBookings.batchInsert(flightBookings) { booking ->
+                this[FlightBookings.id] = booking.id!!
                 this[FlightBookings.bookingReference] = booking.bookingReference
                 this[FlightBookings.oneWay] = booking.oneWay
                 this[FlightBookings.originCity] = booking.originCity
@@ -98,26 +101,44 @@ object DatabaseTestHelper {
                 this[FlightBookings.totalPrice] = booking.totalPrice
             }
 
-            val flightSegments = bookings.flatMap { it.flightBooking.segments }
-            FlightSegments.batchInsert(flightSegments) { segment ->
-                this[FlightSegments.flightBookingId] = FlightBookingEntity[1].id
-                this[FlightSegments.direction] = segment.direction
-                this[FlightSegments.duration] = segment.duration.toJavaDuration()
-                this[FlightSegments.stops] = segment.stops
-            }
+            flightBookings.forEach { booking ->
+                val segments = booking.segments
+                FlightSegments.batchInsert(segments) { segment ->
+                    this[FlightSegments.flightBookingId] = booking.id!!
+                    this[FlightSegments.direction] = segment.direction
+                    this[FlightSegments.duration] = segment.duration.toJavaDuration()
+                    this[FlightSegments.stops] = segment.stops
+                }
 
-            val flights = bookings.flatMap { booking ->
-                booking.flightBooking.segments.flatMap { segment ->
-                    segment.flights
+                val insertedSegments = FlightSegmentEntity.find { FlightSegments.flightBookingId eq booking.id }.map { it.toFlightSegment() }
+
+                segments.forEachIndexed { index, segment ->
+                    val insertedSegment = insertedSegments[index]
+                    val flights = segment.flights
+                    Flights.batchInsert(flights) { flight ->
+                        this[Flights.flightSegmentId] = insertedSegment.id!!
+                        this[Flights.departureIataCode] = flight.departureAirport.iataCode
+                        this[Flights.departureTime] = flight.departureTime.toJavaLocalDateTime()
+                        this[Flights.arrivalIataCode] = flight.arrivalAirport.iataCode
+                        this[Flights.arrivalTime] = flight.arrivalTime.toJavaLocalDateTime()
+                        this[Flights.carrierIataCode] = flight.carrierIataCode
+                    }
                 }
             }
-            Flights.batchInsert(flights) { flight ->
-                this[Flights.flightSegmentId] = FlightSegmentEntity[1].id
-                this[Flights.departureIataCode] = flight.departureAirport.iataCode
-                this[Flights.departureTime] = flight.departureTime.toJavaLocalDateTime()
-                this[Flights.arrivalIataCode] = flight.arrivalAirport.iataCode
-                this[Flights.arrivalTime] = flight.arrivalTime.toJavaLocalDateTime()
-                this[Flights.carrierIataCode] = flight.carrierIataCode
+
+            Bookings.batchInsert(bookings) { booking ->
+                this[Bookings.id] = booking.id!!
+                this[Bookings.userId] = 1
+                this[Bookings.orgId] = booking.user.orgId
+                this[Bookings.originIata] = booking.origin.iataCode
+                this[Bookings.destinationIata] = booking.destination.iataCode
+                this[Bookings.departureDate] = booking.departureDate.toJavaLocalDate()
+                this[Bookings.returnDate] = booking.returnDate?.toJavaLocalDate()
+                this[Bookings.flightBookingId] = booking.flightBooking.id!!
+                this[Bookings.hotelBookingId] = booking.hotelBooking?.id
+                this[Bookings.adultsNumber] = booking.adultsNumber
+                this[Bookings.status] = booking.status
+                this[Bookings.totalPrice] = booking.totalPrice
             }
         }
     }
@@ -134,6 +155,7 @@ object DatabaseTestHelper {
             Airports.deleteAll()
             Airlines.deleteAll()
             Hotels.deleteAll()
+            Bookings.deleteAll()
 
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
@@ -144,6 +166,7 @@ object DatabaseTestHelper {
             exec("ALTER SEQUENCE flightbookings_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flights_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE bookings_id_seq RESTART WITH 1;")
         }
     }
 

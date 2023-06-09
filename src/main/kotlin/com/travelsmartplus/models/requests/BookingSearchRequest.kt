@@ -30,6 +30,6 @@ data class  BookingSearchRequest(
     val adultsNumber: Int,
     val travelClass: String,
     val hotel: Boolean,
-    val checkInDate: LocalDate?,
-    val checkOutDate: LocalDate?
+    val checkInDate: LocalDate? = null,
+    val checkOutDate: LocalDate? = null
 )

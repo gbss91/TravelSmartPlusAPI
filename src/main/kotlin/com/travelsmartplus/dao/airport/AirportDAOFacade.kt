@@ -11,5 +11,5 @@ import com.travelsmartplus.models.Airport
 interface AirportDAOFacade {
     suspend fun getAirport(id: Int): Airport?
     suspend fun getAirport(iata: String): Airport?
-    suspend fun getAirportsQuery(query: String): List<Airport>
+    suspend fun getAllAirports(): List<Airport>
 }

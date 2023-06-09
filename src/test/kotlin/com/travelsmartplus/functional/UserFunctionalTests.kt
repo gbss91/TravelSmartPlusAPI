@@ -5,6 +5,7 @@ import com.travelsmartplus.models.User
 import com.travelsmartplus.models.requests.SetupAccountRequest
 import com.travelsmartplus.testModule
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.serialization.encodeToString
@@ -88,7 +89,9 @@ class UserFunctionalTests {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(editUser))
         }
+        val responseBody = request.bodyAsText()
         assertEquals(HttpStatusCode.Created, request.status)
+        assertNotNull(responseBody)
     }
 
     @Test

@@ -32,7 +32,7 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
             val userId = user.id
             if (userId == null || userId == 0) return null
 
-            val previousBookings = bookingDAO.getAllBookings(user.id)
+            val previousBookings = bookingDAO.getBookingsByUser(user.id)
             val preferredAirlines = user.preferredAirlines ?: emptySet()
             val preferredHotels = user.preferredHotelChains ?: emptySet()
 

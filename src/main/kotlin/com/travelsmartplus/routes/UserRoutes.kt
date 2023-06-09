@@ -51,8 +51,8 @@ fun Route.userRoutes() {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
                 val editedUser = call.receive<User>()
-                dao.editUser(id, editedUser)
-                call.respond(HttpStatusCode.Created)
+                val user = dao.editUser(id, editedUser)
+                call.respond(HttpStatusCode.Created, user)
             } catch (e: BadRequestException) {
                 e.printStackTrace()
                 call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)

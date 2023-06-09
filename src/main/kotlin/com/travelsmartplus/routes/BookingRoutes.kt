@@ -56,13 +56,8 @@ fun Route.bookingRoutes() {
 
     get("/airports/search") {
         try {
-            val query = call.request.queryParameters["query"] ?: throw BadRequestException("Missing parameter")
-            val airports = airportDAO.getAirportsQuery(query)
+            val airports = airportDAO.getAllAirports()
             call.respond(HttpStatusCode.OK, airports)
-
-        } catch (e: BadRequestException) {
-            e.printStackTrace()
-            call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
         } catch (e: Exception) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, HttpResponses.INTERNAL_SERVER_ERROR)

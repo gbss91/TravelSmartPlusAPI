@@ -17,8 +17,6 @@ import kotlin.test.assertEquals
 
 class AuthFunctionalTests {
 
-    private lateinit var token: String
-
     @Before
     fun setup() {
         DatabaseTestHelper.setup()

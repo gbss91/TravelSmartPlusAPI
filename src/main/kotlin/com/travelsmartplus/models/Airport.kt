@@ -23,7 +23,7 @@ object Airports: IntIdTable() {
     val airportName = varchar("airport_name", 355)
     val city = varchar("city", 50)
     val country = varchar("country", 50)
-    val iataCode = varchar("iata_code", 3).uniqueIndex()
+    val iataCode = varchar("iata_code", 3)
     val icaoCode = varchar("icao_code", 4).uniqueIndex()
     val latitude = double("latitude")
     val longitude = double("longitude")

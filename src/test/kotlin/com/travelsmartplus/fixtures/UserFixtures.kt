@@ -5,6 +5,7 @@ import com.travelsmartplus.models.User
 object UserFixtures {
     val users = listOf(
         User(
+            id = 1,
             orgId = 1,
             firstName = "John",
             lastName = "Doe",
@@ -17,6 +18,7 @@ object UserFixtures {
             preferredHotelChains = setOf("MC")
         ),
         User(
+            id = 2,
             orgId = 1,
             firstName = "Jane",
             lastName = "Smith",

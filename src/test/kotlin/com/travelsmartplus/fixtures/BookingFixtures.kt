@@ -35,8 +35,8 @@ object BookingFixtures {
             every { booking.destination } returns destination
             every { booking.departureDate } returns departureDate.toKotlinLocalDate()
             every { booking.returnDate } returns returnDate.toKotlinLocalDate()
-            every { booking.flightBooking } returns FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate)
-            every { booking.hotelBooking } returns HotelFixtures.createMockHotelBooking(departureDate.toKotlinLocalDate(), returnDate.toKotlinLocalDate())
+            every { booking.flightBooking } returns FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate, i)
+            every { booking.hotelBooking } returns HotelFixtures.createMockHotelBooking(departureDate.toKotlinLocalDate(), returnDate.toKotlinLocalDate(), i)
             every { booking.adultsNumber } returns 1
             every { booking.status } returns "CONFIRMED"
             every { booking.totalPrice } returns totalPrice

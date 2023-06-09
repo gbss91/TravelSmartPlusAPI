@@ -12,7 +12,8 @@ object HotelFixtures {
 
     fun createMockHotelBooking(
         checkInDate: LocalDate,
-        checkOutDate: LocalDate
+        checkOutDate: LocalDate,
+        index: Int
     ): HotelBooking {
         val hotelBooking = mockk<HotelBooking>()
 
@@ -28,6 +29,7 @@ object HotelFixtures {
         val randomChainCode = hotelChainCodes[Random.nextInt(hotelChainCodes.size)]
 
         // Configure properties of mock hotel booking
+        every { hotelBooking.id } returns index+1
         every { hotelBooking.hotelName } returns "Test Hotel"
         every { hotelBooking.hotelChainCode } returns randomChainCode
         every { hotelBooking.address } returns "Address 123 St"

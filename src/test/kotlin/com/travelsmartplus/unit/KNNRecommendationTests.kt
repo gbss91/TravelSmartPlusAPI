@@ -17,7 +17,6 @@ class KNNRecommendationTests {
     private val previousBookings = BookingFixtures.createMockBookings()
     private val preferredAirlines = UserFixtures.users[0].preferredAirlines!!
     private val preferredHotels = UserFixtures.users[0].preferredHotelChains!!
-    private val k = 3
 
     @Before
     fun setup() {
@@ -40,9 +39,9 @@ class KNNRecommendationTests {
         val departureDate = LocalDate.of(2023, 11, 21)
         val returnDate = LocalDate.of(2023, 11, 24)
         val flights = listOf(
-            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate),
-            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate),
-            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate)
+            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate, 0),
+            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate, 1),
+            FlightFixtures.createMockFlightBooking(origin, destination, departureDate, returnDate, 2)
         )
 
         // Predict flight and assert
@@ -62,9 +61,9 @@ class KNNRecommendationTests {
         val checkInDate = LocalDate.of(2023, 11, 21).toKotlinLocalDate()
         val checkOutDate = LocalDate.of(2023, 11, 24).toKotlinLocalDate()
         val hotels = listOf(
-            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate),
-            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate),
-            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate)
+            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate, 0),
+            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate, 1),
+            HotelFixtures.createMockHotelBooking(checkInDate, checkOutDate, 2)
         )
 
         // Predict hotel and assert

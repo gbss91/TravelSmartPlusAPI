@@ -17,7 +17,7 @@ data class Airline(
 // Table
 object Airlines: IntIdTable() {
     val airlineName = varchar("airline_name", 50)
-    val iataCode = varchar("iata_code", 3).uniqueIndex()
+    val iataCode = varchar("iata_code", 3)
     val icaoCode = varchar("icao_code", 4).uniqueIndex()
 }
 

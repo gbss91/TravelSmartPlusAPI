@@ -5,7 +5,6 @@ import com.travelsmartplus.models.Flight
 import com.travelsmartplus.models.FlightBooking
 import com.travelsmartplus.models.FlightSegment
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Test
