@@ -20,6 +20,7 @@ data class HotelBooking(
     val address: String,
     val checkInDate: LocalDate,
     val checkOutDate: LocalDate,
+    val roomType: String? = null,
     @Serializable(with = BigDecimalSerializer::class)
     val rate: BigDecimal,
     @Serializable(with = BigDecimalSerializer::class)
@@ -35,6 +36,7 @@ object HotelBookings: IntIdTable() {
     val address = varchar("address", 100 )
     val checkInDate = date("checkIn_date")
     val checkOutDate = date("checkOut_date")
+    val roomType = varchar("room_type", 50).nullable()
     val rate = decimal("rate", 10, 2)
     val totalPrice = decimal("total_price", 10, 2)
     val latitude = double("latitude")
@@ -49,6 +51,7 @@ class HotelBookingEntity(id: EntityID<Int>): IntEntity(id) {
     var address by HotelBookings.address
     var checkInDate by HotelBookings.checkInDate
     var checkOutDate by HotelBookings.checkOutDate
+    var roomType by HotelBookings.roomType
     var rate by HotelBookings.rate
     var totalPrice by HotelBookings.totalPrice
     var latitude by HotelBookings.latitude
@@ -57,5 +60,5 @@ class HotelBookingEntity(id: EntityID<Int>): IntEntity(id) {
 
 // Transform entity to data class
 fun HotelBookingEntity.toHotelBooking(): HotelBooking = HotelBooking(
-    id.value, hotelName, hotelChainCode, address, checkInDate.toKotlinLocalDate(), checkOutDate.toKotlinLocalDate(), rate, totalPrice, latitude, longitude
+    id.value, hotelName, hotelChainCode, address, checkInDate.toKotlinLocalDate(), checkOutDate.toKotlinLocalDate(), roomType, rate, totalPrice, latitude, longitude,
 )

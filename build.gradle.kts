@@ -44,9 +44,8 @@ dependencies {
     implementation("io.ktor:ktor-client-core-jvm:2.3.1")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.1")
     implementation("io.ktor:ktor-client-okhttp-jvm:2.3.1")
+    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-
-    // HttpClient for external API calls
 
 
     // Database dependencies

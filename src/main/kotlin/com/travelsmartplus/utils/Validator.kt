@@ -21,12 +21,6 @@ object Validator {
         }
     }
 
-    fun validateSignInRequest(request: SignInRequest) {
-        if (request.email.isBlank() || request.password.isBlank()) {
-            throw IllegalArgumentException("Missing fields")
-        }
-    }
-
     fun validateUpdatePasswordRequest(request: UpdatePasswordRequest) {
         if (request.newPassword.isBlank()) {
             throw IllegalArgumentException("Missing fields")

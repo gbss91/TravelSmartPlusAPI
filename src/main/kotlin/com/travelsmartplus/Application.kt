@@ -1,9 +1,6 @@
 package com.travelsmartplus
 
-import com.travelsmartplus.plugins.configureHTTP
-import com.travelsmartplus.plugins.configureRouting
-import com.travelsmartplus.plugins.configureSecurity
-import com.travelsmartplus.plugins.configureSerialization
+import com.travelsmartplus.plugins.*
 import com.travelsmartplus.utils.DatabaseFactory
 import io.ktor.server.application.*
 import io.ktor.server.engine.*

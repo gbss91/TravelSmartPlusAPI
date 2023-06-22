@@ -45,16 +45,16 @@ class FlightIntegrationTests {
     @Test
     fun `get flights by segment`() = runBlocking {
         val flights = flightDao.getFlightsBySegment(1)
-        assertEquals(12, flights.size)
+        assertEquals(1, flights.size)
     }
 
     @Test
     fun `add flight`() = runBlocking {
         val newFlight = Flight(
             departureAirport = airportDao.getAirport("DUB")!!,
-            departureTime = LocalDateTime(2023, 6, 5, 18, 50),
+            departureTime = LocalDateTime(2023, 11, 5, 18, 50),
             arrivalAirport = airportDao.getAirport("JFK")!!,
-            arrivalTime = LocalDateTime(2023, 6, 6, 5, 7),
+            arrivalTime = LocalDateTime(2023, 11, 6, 5, 7),
             carrierIataCode = "UA"
         )
         val flight = flightDao.addFlight(newFlight, 1)

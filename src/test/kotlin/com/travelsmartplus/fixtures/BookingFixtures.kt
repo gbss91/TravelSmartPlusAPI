@@ -29,7 +29,7 @@ object BookingFixtures {
             val returnDate = departureDate.plusDays((0..10).random().toLong())
 
 
-            every { booking.id } returns (i+1)
+            every { booking.id } returns i
             every { booking.user } returns admin
             every { booking.origin } returns origin
             every { booking.destination } returns destination

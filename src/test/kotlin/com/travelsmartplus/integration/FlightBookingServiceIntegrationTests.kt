@@ -29,6 +29,7 @@ class FlightBookingServiceIntegrationTests {
     @Test
     fun `getFlights should return a list of flight bookings`() = runBlocking {
         val bookingSearchRequest = BookingSearchRequest(
+            userId = 1,
             oneWay = false,
             nonStop = true,
             origin = airportDao.getAirport("DUB")!!,
@@ -46,23 +47,4 @@ class FlightBookingServiceIntegrationTests {
         assertEquals(true, flightBookings.isNotEmpty())
     }
 
-    @Test
-    fun `getFlights should return empty list when exception`() = runBlocking {
-        val bookingSearchRequest = BookingSearchRequest(
-            oneWay = false,
-            nonStop = true,
-            origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("JFK")!!,
-            departureDate = LocalDate(2023, 11, 5),
-            returnDate = LocalDate(2023, 11, 10),
-            adultsNumber = 1,
-            travelClass = "WRONG CLASS", // Wrong class - Throw error
-            hotel = true,
-            checkInDate =  LocalDate(2023, 11, 5),
-            checkOutDate = LocalDate(2023, 11, 10)
-        )
-        val flightBookings = flightService.getFlights(bookingSearchRequest)
-        assertEquals(true, flightBookings.isEmpty())
-
-    }
 }

@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 /**
  * Represents a booking search request made by the user.
  * @author Gabriel Salas
+ * @property userId Indicates user making the request. Required for POST calls where there is not query or url params.
  * @property oneWay Indicates if the search is for a one-way trip.
  * @property nonStop Indicates if search is for non-stop flights only.
  * @property origin The origin [Airport] for the booking search.
@@ -21,6 +22,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class  BookingSearchRequest(
+    val userId: Int,
     val oneWay: Boolean,
     val nonStop: Boolean,
     val origin: Airport,

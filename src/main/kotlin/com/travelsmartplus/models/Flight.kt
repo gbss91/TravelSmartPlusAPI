@@ -20,7 +20,8 @@ data class Flight(
     val departureTime: LocalDateTime,
     val arrivalAirport: Airport,
     val arrivalTime: LocalDateTime,
-    val carrierIataCode: String
+    val carrierIataCode: String,
+    val carrierName: String? = null
 )
 
 // Table

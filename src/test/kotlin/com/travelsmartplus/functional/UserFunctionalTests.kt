@@ -18,12 +18,13 @@ import kotlin.test.assertNotNull
 
 class UserFunctionalTests {
 
-    private lateinit var token: String
+    private lateinit var adminToken: String
+    private lateinit var staffToken: String
 
     @Before
     fun setup() {
         DatabaseTestHelper.setup()
-        token = DatabaseTestHelper.signIn(email = "john@test.com", password = "myPass123")
+        adminToken = DatabaseTestHelper.signIn(email = "john@test.com", password = "myPass123")
     }
 
     @After
@@ -32,7 +33,7 @@ class UserFunctionalTests {
     }
 
     @Test
-    fun `create new user`() = testApplication {
+    fun `admin creates new user`() = testApplication {
         application { testModule() }
         val user = User(
             orgId = 1,
@@ -44,8 +45,8 @@ class UserFunctionalTests {
             salt = "123",
             accountSetup = true
         )
-        val request = client.post("api/user") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+        val request = client.post("api/admin/new-user") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(user))
         }
@@ -53,22 +54,51 @@ class UserFunctionalTests {
     }
 
     @Test
-    fun `get users`() = testApplication {
+    fun `admin can get all company users`() = testApplication {
         application { testModule() }
 
         // Test get all users
-        val response = client.get("api/users/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+        val response = client.get("api/admin/users/1") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
         }
         assertEquals(HttpStatusCode.OK, response.status)
         assertNotNull(response)
 
         // Test get one user
         val user = client.get("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
         }
         assertEquals(HttpStatusCode.OK, user.status)
         assertNotNull(user)
+    }
+
+    @Test
+    fun `non-admin should not get all users`() = testApplication {
+        application { testModule() }
+
+        // Sign in as staff
+        staffToken = DatabaseTestHelper.signIn(email = "jane@test.com", password = "myPass123")
+
+        // Test get all users
+        val response = client.get("api/admin/users/1") {
+            header(HttpHeaders.Authorization, "Bearer $staffToken")
+        }
+        assertEquals(HttpStatusCode.Forbidden, response.status)
+    }
+
+    @Test
+    fun `staff cannot access other profiles`() = testApplication {
+        application { testModule() }
+
+        // Sign in as staff
+        staffToken = DatabaseTestHelper.signIn(email = "jane@test.com", password = "myPass123")
+
+        //Try to get another user account
+        val response = client.get("api/user/1") {
+            header(HttpHeaders.Authorization, "Bearer $staffToken")
+        }
+        assertEquals(HttpStatusCode.Forbidden, response.status)
+
     }
 
     @Test
@@ -84,8 +114,8 @@ class UserFunctionalTests {
             salt = "123",
             accountSetup = true
         )
-        val request = client.post("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+        val request = client.put("api/user/1") {
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(editUser))
         }
@@ -97,8 +127,9 @@ class UserFunctionalTests {
     @Test
     fun `successfully delete an user`() = testApplication {
         application { testModule() }
+        println("TOKEN: $adminToken")
         val request = client.delete("api/user/1") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
         }
         assertEquals(HttpStatusCode.OK, request.status)
     }
@@ -108,7 +139,7 @@ class UserFunctionalTests {
         application { testModule() }
         val setupAccountRequest = SetupAccountRequest("MyNewPass1234!", setOf("AA", "EI"), setOf("MC", "AC"))
         val request = client.post("api/user/1/setup") {
-            header(HttpHeaders.Authorization, "Bearer $token")
+            header(HttpHeaders.Authorization, "Bearer $adminToken")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(setupAccountRequest))
         }

@@ -8,6 +8,7 @@ import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.requests.SignUpRequest
 import com.travelsmartplus.models.requests.UpdatePasswordRequest
 import com.travelsmartplus.models.responses.AuthResponse
+import com.travelsmartplus.models.responses.HttpResponses.BAD_REQUEST
 import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_ORG
 import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_USER
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_ORG
@@ -28,6 +29,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.ContentTransformationException
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -76,9 +78,12 @@ fun Route.authRoutes() {
             )
             userDAO.addUser(user) ?: return@post call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
             call.respond(HttpStatusCode.Created)
+        } catch (e: ContentTransformationException) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
-            call.respond(HttpStatusCode.BadRequest, FAILED_SIGNUP)
+            call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)
         } catch (e: Exception) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_SIGNUP)
@@ -88,7 +93,6 @@ fun Route.authRoutes() {
     post("/signin") {
         try {
             val request = call.receive<SignInRequest>()
-            Validator.validateSignInRequest(request)
 
             // Check is user exists and validate password
             val user = userDAO.getUserByEmail(request.email) ?: throw NotFoundException()
@@ -111,12 +115,12 @@ fun Route.authRoutes() {
                 call.respond(HttpStatusCode.Unauthorized, INVALID_CREDENTIALS)
             }
 
-        } catch (e: IllegalArgumentException) { // No details for other exceptions to avoid disclosing private data
+        } catch (e: ContentTransformationException) {
             e.printStackTrace()
-            call.respond(HttpStatusCode.BadRequest, FAILED_SIGNIN)
+            call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)
         } catch (e: NotFoundException) {
             e.printStackTrace()
-            call.respond(HttpStatusCode.NotFound, NOT_FOUND)
+            call.respond(HttpStatusCode.NotFound, INVALID_CREDENTIALS)
         } catch (e: Exception) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_SIGNIN)
@@ -127,14 +131,14 @@ fun Route.authRoutes() {
         // Refresh token rotation
         get("/authenticate") {
             try {
-                // Extra security layer - Only allows authorisation if already signed in
-                val userId = call.sessions.get<UserSession>()?.userId ?: return@get call.respond(
+                // Extra security layer - Only allows authorisation if valid userId Cookie
+                val userId = call.request.cookies["user_id"] ?: return@get call.respond(
                     HttpStatusCode.Unauthorized,
                     UNAUTHORIZED
                 )
 
                 // Generate new tokens
-                val user = userDAO.getUser(userId) ?: throw NotFoundException()
+                val user = userDAO.getUser(userId.toInt()) ?: throw NotFoundException()
                 val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
@@ -164,9 +168,12 @@ fun Route.authRoutes() {
 
                 call.respond(HttpStatusCode.Created)
 
+            } catch (e: ContentTransformationException) {
+                e.printStackTrace()
+                call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)
             } catch (e: IllegalArgumentException) {
                 e.printStackTrace()
-                call.respond(HttpStatusCode.BadRequest, FAILED_PASSWORD_UPDATE)
+                call.respond(HttpStatusCode.BadRequest, BAD_REQUEST)
             } catch (e: NotFoundException) {
                 e.printStackTrace()
                 call.respond(HttpStatusCode.NotFound, NOT_FOUND)

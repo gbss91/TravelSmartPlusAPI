@@ -29,12 +29,13 @@ object HotelFixtures {
         val randomChainCode = hotelChainCodes[Random.nextInt(hotelChainCodes.size)]
 
         // Configure properties of mock hotel booking
-        every { hotelBooking.id } returns index+1
+        every { hotelBooking.id } returns index
         every { hotelBooking.hotelName } returns "Test Hotel"
         every { hotelBooking.hotelChainCode } returns randomChainCode
         every { hotelBooking.address } returns "Address 123 St"
         every { hotelBooking.checkInDate } returns checkInDate
         every { hotelBooking.checkOutDate } returns checkOutDate
+        every { hotelBooking.roomType } returns "Standard Room"
         every { hotelBooking.rate } returns rate
         every { hotelBooking.totalPrice } returns totalPrice
         every { hotelBooking.latitude } returns 37.7749

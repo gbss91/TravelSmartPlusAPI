@@ -41,6 +41,7 @@ object DatabaseTestHelper {
             }
 
             Users.batchInsert(UserFixtures.users) { user ->
+                this[Users.id] = user.id!!
                 this[Users.orgId] = OrgEntity[user.orgId].id
                 this[Users.firstName] = user.firstName
                 this[Users.lastName] = user.lastName
@@ -77,12 +78,12 @@ object DatabaseTestHelper {
 
             val hotelBookings = bookings.flatMap { listOf(it.hotelBooking) }.filterNotNull()
             HotelBookings.batchInsert(hotelBookings) { hotelBooking ->
-                this[HotelBookings.id] = hotelBooking.id!!
                 this[HotelBookings.hotelName] = hotelBooking.hotelName
                 this[HotelBookings.hotelChainCode] = hotelBooking.hotelChainCode
                 this[HotelBookings.address] = hotelBooking.address
                 this[HotelBookings.checkInDate] = hotelBooking.checkInDate.toJavaLocalDate()
                 this[HotelBookings.checkOutDate] = hotelBooking.checkOutDate.toJavaLocalDate()
+                this[HotelBookings.roomType] = hotelBooking.roomType
                 this[HotelBookings.rate] = hotelBooking.rate
                 this[HotelBookings.totalPrice] = hotelBooking.totalPrice
                 this[HotelBookings.latitude] = hotelBooking.latitude
@@ -91,7 +92,6 @@ object DatabaseTestHelper {
 
             val flightBookings = bookings.flatMap { listOf(it.flightBooking) }
             FlightBookings.batchInsert(flightBookings) { booking ->
-                this[FlightBookings.id] = booking.id!!
                 this[FlightBookings.bookingReference] = booking.bookingReference
                 this[FlightBookings.oneWay] = booking.oneWay
                 this[FlightBookings.originCity] = booking.originCity
@@ -127,7 +127,6 @@ object DatabaseTestHelper {
             }
 
             Bookings.batchInsert(bookings) { booking ->
-                this[Bookings.id] = booking.id!!
                 this[Bookings.userId] = 1
                 this[Bookings.orgId] = booking.user.orgId
                 this[Bookings.originIata] = booking.origin.iataCode
@@ -174,7 +173,7 @@ object DatabaseTestHelper {
     fun signIn(email: String, password: String): String {
         lateinit var token: String
         testApplication {
-            application { module() }
+            application { testModule() }
             val signInRequest = SignInRequest(email, password)
             val response = client.post("api/signin") {
                 contentType(ContentType.Application.Json)

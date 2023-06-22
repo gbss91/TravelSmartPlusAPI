@@ -35,8 +35,9 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
             val previousBookings = bookingDAO.getBookingsByUser(user.id)
             val preferredAirlines = user.preferredAirlines ?: emptySet()
             val preferredHotels = user.preferredHotelChains ?: emptySet()
+            val flightResults = flightService.getFlights(bookingSearchRequest)
 
-            // Return null if previous bookings less than 2, else create predicted booking
+            // Use simple prediction if less than 2 bookings - else use KNN Algorithm
             if (previousBookings.size < 2) {
                 return null
             } else {
@@ -44,8 +45,7 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
                 // Train algorithm
                 knn.trainModel(previousBookings, preferredAirlines, preferredHotels)
 
-                // Search and predict flight
-                val flightResults = flightService.getFlights(bookingSearchRequest)
+                // Predict flight
                 val predictedFlight = knn.predict(flightResults) ?: return null
 
                 val newBooking = Booking(

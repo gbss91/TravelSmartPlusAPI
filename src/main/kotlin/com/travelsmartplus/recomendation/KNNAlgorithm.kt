@@ -3,8 +3,8 @@ package com.travelsmartplus.recomendation
 import kotlin.math.sqrt
 
 /**
- * KNNAlgorithm represents a K-Nearest Neighbors algorithm implementation.
- * It can be used for predicting labels based on labeled instances and calculating distances between features.
+ * K-Nearest Neighbour supervised algorithm implementation.
+ * Calculate distance between class labels and classifies using the most common label around.
  * @author Gabriel Salas
  * @param T the type of the label for labeled instances.
  * @throws IllegalStateException if instances list is empty
@@ -32,6 +32,7 @@ class KNNAlgorithm<T> {
             }.sortedBy { it.distance }
 
             val kNearestNeighbors = distances.take(k)
+
             val majorityLabel = kNearestNeighbors.groupingBy { it.label }.eachCount().maxByOrNull { it.value }?.key
 
             NearestNeighbor(instance, kNearestNeighbors, majorityLabel)
@@ -55,6 +56,7 @@ class KNNAlgorithm<T> {
 }
 
 data class LabeledInstance<T>(val features: List<Double>, val label: T)
+
 data class Distance(val distance: Double, val label: Any?)
 
 data class NearestNeighbor<T>(

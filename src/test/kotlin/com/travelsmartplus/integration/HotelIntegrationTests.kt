@@ -41,14 +41,15 @@ class HotelIntegrationTests {
             address = "Northwood Avenue, Dublin, Ireland",
             checkInDate = LocalDate(2023, 11, 1),
             checkOutDate = LocalDate(2023, 11, 5),
+            roomType = "Standard",
             rate = BigDecimal("120.00"),
             totalPrice = BigDecimal("480.00"),
             latitude = 37.7749,
             longitude = -122.4194
         )
 
-        val hotel = dao.addHotelBooking(newHotelBooking)
-        assertEquals(7, hotel)
+        val hotelId = dao.addHotelBooking(newHotelBooking)
+        assertEquals(7, hotelId)
     }
 
     @Test

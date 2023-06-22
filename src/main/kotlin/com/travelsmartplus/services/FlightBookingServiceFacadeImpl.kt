@@ -3,6 +3,7 @@ package com.travelsmartplus.services
 import com.travelsmartplus.apis.AmadeusAuthenticationApi
 import com.travelsmartplus.apis.FlightApi
 import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
+import com.travelsmartplus.dao.airline.AirlineDAOFacadeImpl
 import com.travelsmartplus.dao.airport.AirportDAOFacadeImpl
 import com.travelsmartplus.models.Flight
 import com.travelsmartplus.models.FlightBooking
@@ -29,12 +30,9 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
             val flightOffersResponse = flightApi.getFlights(token, bookingSearchRequest)
             return createFlightBookingsFromResponse(flightOffersResponse, bookingSearchRequest)
 
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-            return emptyList()
         } catch (e: Exception) {
             e.printStackTrace()
-            return emptyList()
+            throw Exception()
         }
     }
 
@@ -55,7 +53,8 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
                         arrivalAirport = AirportDAOFacadeImpl().getAirport(flight.arrival.iataCode)
                             ?: throw NotFoundException(),
                         arrivalTime = flight.arrival.at.toLocalDateTime(),
-                        carrierIataCode = flight.carrierCode
+                        carrierIataCode = flight.carrierCode,
+                        carrierName = AirlineDAOFacadeImpl().getAirline(flight.carrierCode)?.airlineName ?: flight.carrierCode // Display Iata if no name
                     )
                 }
 

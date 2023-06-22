@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class HotelBookingServiceIntegrationTests {
 
-    private val hotelService: HotelBookingServiceFacadeImpl = HotelBookingServiceFacadeImpl()
+    private val hotelService = HotelBookingServiceFacadeImpl()
     private val airportDao = AirportDAOFacadeImpl()
 
     @Before
@@ -29,27 +29,7 @@ class HotelBookingServiceIntegrationTests {
     @Test
     fun `getHotels should return list of hotel bookings`() = runBlocking {
         val bookingSearchRequest = BookingSearchRequest(
-            oneWay = false,
-            nonStop = false,
-            origin = airportDao.getAirport("DUB")!!,
-            destination = airportDao.getAirport("JFK")!!,
-            departureDate = LocalDate(2023, 6, 5),
-            returnDate = LocalDate(2023, 6, 10),
-            adultsNumber = 1,
-            travelClass = "ECONOMY",
-            hotel = true,
-            checkInDate =  LocalDate(2023, 6, 5),
-            checkOutDate = LocalDate(2023, 6, 10)
-        )
-
-
-        val hotelBookings = hotelService.getHotels(bookingSearchRequest)
-        assertEquals(true, hotelBookings.isNotEmpty())
-    }
-
-    @Test
-    fun `getHotels should return empty list when exception`() = runBlocking {
-        val bookingSearchRequest = BookingSearchRequest(
+            userId = 1,
             oneWay = false,
             nonStop = false,
             origin = airportDao.getAirport("DUB")!!,
@@ -60,12 +40,13 @@ class HotelBookingServiceIntegrationTests {
             travelClass = "ECONOMY",
             hotel = true,
             checkInDate =  LocalDate(2023, 11, 5),
-            checkOutDate = LocalDate(2023, 11, 3) // Wrong date
+            checkOutDate = LocalDate(2023, 11, 10)
         )
 
 
         val hotelBookings = hotelService.getHotels(bookingSearchRequest)
-        assertEquals(true, hotelBookings.isEmpty())
+        assertEquals(true, hotelBookings.isNotEmpty())
     }
+
 
 }

@@ -36,7 +36,7 @@ object FlightFixtures {
         // Generate random totalPrice
         val totalPrice = BigDecimal.valueOf(Random.nextDouble(500.0, 1200.0))
 
-        every { flightBooking.id } returns index+1
+        every { flightBooking.id } returns index
         every { flightBooking.bookingReference } returns "AX9G75"
         every { flightBooking.oneWay } returns false
         every { flightBooking.originCity } returns origin.city

@@ -18,6 +18,7 @@ class HotelTests {
             address = "123 Main St, Los Angeles, USA",
             checkInDate = LocalDate(2023, 6, 1),
             checkOutDate = LocalDate(2023, 6, 5),
+            roomType = "Standard Room",
             rate = BigDecimal("99.99"),
             totalPrice = BigDecimal("399.96"),
             latitude = 37.7749,

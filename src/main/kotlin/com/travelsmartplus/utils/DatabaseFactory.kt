@@ -33,7 +33,8 @@ object DatabaseFactory {
                 FlightBookings,
                 Airports,
                 Airlines,
-                Hotels
+                Hotels,
+                HotelBookings
             )
         }
     }

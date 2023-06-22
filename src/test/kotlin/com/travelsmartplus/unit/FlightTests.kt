@@ -47,7 +47,8 @@ class FlightTests {
                     departureTime = LocalDateTime(2023, 6, 5, 18, 50),
                     arrivalAirport = destination,
                     arrivalTime = LocalDateTime(2023, 6, 6, 5, 7),
-                    carrierIataCode = "AA"
+                    carrierIataCode = "AA",
+                    carrierName = ""
                 )
             ),
             direction = "outbound",
