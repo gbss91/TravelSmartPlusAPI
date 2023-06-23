@@ -3,8 +3,8 @@ package com.travelsmartplus.recomendation
 import kotlin.math.sqrt
 
 /**
- * K-Nearest Neighbour supervised algorithm implementation.
- * Calculate distance between class labels and classifies using the most common label around.
+ * K-Nearest Neighbours algorithm implementation.
+ * Calculates data based on similarity to nearby labeled classes. Modified to return instance with closest neighbour from list of instances.
  * @author Gabriel Salas
  * @param T the type of the label for labeled instances.
  * @throws IllegalStateException if instances list is empty
@@ -12,11 +12,9 @@ import kotlin.math.sqrt
 
 class KNNAlgorithm<T> {
     private var trainInstances: List<LabeledInstance<T>> = emptyList()
-    private var k: Int = 0
 
-    fun train(instances: List<LabeledInstance<T>>, k: Int) {
+    fun train(instances: List<LabeledInstance<T>>) {
         trainInstances = instances
-        this.k = k
     }
 
     fun predict(instances: List<LabeledInstance<T>>): LabeledInstance<T>? {
@@ -24,25 +22,21 @@ class KNNAlgorithm<T> {
             throw IllegalStateException("The model has not been trained. Call the train() method first.")
         }
 
-        // Calculate distances and get nearest neighbours
-        val nearestNeighbors = instances.map { instance ->
+        val nearestNeighbours = instances.map { instance ->
             val distances = trainInstances.map { trainInstance ->
                 val distance = calculateDistance(instance.features, trainInstance.features)
                 Distance(distance, trainInstance.label)
             }.sortedBy { it.distance }
 
-            val kNearestNeighbors = distances.take(k)
-
-            val majorityLabel = kNearestNeighbors.groupingBy { it.label }.eachCount().maxByOrNull { it.value }?.key
-
-            NearestNeighbor(instance, kNearestNeighbors, majorityLabel)
+            val closestNeighbour = distances.first()
+            NearestNeighbour(instance, closestNeighbour)
         }
 
-        // Get instance with the closest distance among the nearest neighbours
-        val predictedLabel = nearestNeighbors.minByOrNull { it.nearestNeighbors.firstOrNull()?.distance ?: Double.MAX_VALUE }
-        return predictedLabel?.instance
+        // Return the instance with the closest neighbour
+        return nearestNeighbours.minByOrNull { it.nearestNeighbour.distance }?.instance
     }
 
+    // Calculates distance using Euclidean distance
     private fun calculateDistance(features1: List<Double>, features2: List<Double>): Double {
         require(features1.size == features2.size)
 
@@ -54,13 +48,3 @@ class KNNAlgorithm<T> {
         return sqrt(sum)
     }
 }
-
-data class LabeledInstance<T>(val features: List<Double>, val label: T)
-
-data class Distance(val distance: Double, val label: Any?)
-
-data class NearestNeighbor<T>(
-    val instance: LabeledInstance<T>,
-    val nearestNeighbors: List<Distance>,
-    val majorityLabel: Any?
-)

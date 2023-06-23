@@ -11,7 +11,6 @@ import com.travelsmartplus.models.*
  *
  * @property flightKnnAlgorithm An instance of the [KNNAlgorithm] for flight bookings.
  * @property hotelKnnAlgorithm An instance of the [KNNAlgorithm] for hotel bookings.
- * @property k The number of neighbors to consider in the KNN algorithm.
  * @property airlineDao An instance of the [AirlineDAOFacadeImpl] for accessing airline data.
  * @property hotelDao An instance of the [HotelDAOFacadeImpl] for accessing hotel data.
  *
@@ -22,7 +21,6 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
 
     private val flightKnnAlgorithm = KNNAlgorithm<FlightBooking>()
     private val hotelKnnAlgorithm = KNNAlgorithm<HotelBooking>()
-    private val k = 3
 
     private val airlineDao = AirlineDAOFacadeImpl()
     private val hotelDao = HotelDAOFacadeImpl()
@@ -50,7 +48,7 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
                     label = booking.flightBooking
                 )
             }
-            flightKnnAlgorithm.train(flightLabeledInstances, k)
+            flightKnnAlgorithm.train(flightLabeledInstances)
 
             // Only train hotels if there are hotels in bookings
             if (previousBookings.any { it.hotelBooking != null }) {
@@ -62,7 +60,7 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
                         )
                     }
                 }
-                hotelKnnAlgorithm.train(hotelLabeledInstances, k)
+                hotelKnnAlgorithm.train(hotelLabeledInstances)
             }
         } catch (e:Exception) {
             e.printStackTrace()
@@ -80,7 +78,7 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
             )
         }
 
-        // Predict flight with the highest predicted label
+        // Predict flight with the closest neighbour
         val predictedFlight = flightKnnAlgorithm.predict(instances)
         return predictedFlight?.label
     }
@@ -95,13 +93,13 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
             )
         }
 
-        // Predict hotel with the highest predicted label
+        // Predict flight with the closest neighbour
         val predictedHotel = hotelKnnAlgorithm.predict(instances)
         return predictedHotel?.label
     }
 
 
-    // Extract relevant features for flights
+    // Extract and normalise relevant features for flights
     private fun getFlightFeatures(flightBooking: FlightBooking): List<Double> {
         val features = mutableListOf<Double>()
 
@@ -121,10 +119,11 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
         val travelClassFeature = encodeTravelClass(flightBooking.travelClass)
         features.add(travelClassFeature)
 
-        return features
+        // Return normalised features
+        return FeatureScaling.minMaxNormalization(features)
     }
 
-    // Extract relevant features for hotels
+    // Extract and normalise relevant features for hotels
     private fun getHotelFeatures(hotelBooking: HotelBooking): List<Double> {
         val features = mutableListOf<Double>()
 
@@ -136,7 +135,8 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
         val hotelFeatures = encodeHotels(hotelBooking)
         features.addAll(hotelFeatures)
 
-        return features
+        // Return normalised features
+        return FeatureScaling.minMaxNormalization(features)
     }
 
     private fun encodeAirlines(segments: List<FlightSegment>): List<Double> {
