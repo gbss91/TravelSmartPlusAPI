@@ -1,15 +1,14 @@
 package com.travelsmartplus.routes
 
+import com.travelsmartplus.dao.airline.AirlineDAOFacadeImpl
 import com.travelsmartplus.dao.airport.AirportDAOFacadeImpl
 import com.travelsmartplus.dao.booking.BookingDAOFacadeImpl
+import com.travelsmartplus.dao.hotel.HotelDAOFacadeImpl
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.Booking
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.models.responses.HttpResponses
-import com.travelsmartplus.services.BookingServiceFacadeImpl
-import com.travelsmartplus.services.FlightBookingServiceFacadeImpl
-import com.travelsmartplus.services.HotelBookingServiceFacade
-import com.travelsmartplus.services.HotelBookingServiceFacadeImpl
+import com.travelsmartplus.services.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -30,9 +29,12 @@ fun Route.bookingRoutes() {
     val bookingDAO = BookingDAOFacadeImpl()
     val userDAO = UserDAOFacadeImpl()
     val airportDAO = AirportDAOFacadeImpl()
+    val airlineDAO = AirlineDAOFacadeImpl()
+    val hotelDAO = HotelDAOFacadeImpl()
     val bookingService = BookingServiceFacadeImpl()
     val flightService = FlightBookingServiceFacadeImpl()
     val hotelService = HotelBookingServiceFacadeImpl()
+    val placesService = PlacesServiceFacadeImpl()
 
     // Booking search
     post("/bookingSearch") {
@@ -69,6 +71,28 @@ fun Route.bookingRoutes() {
         try {
             val airports = airportDAO.getAllAirports()
             call.respond(HttpStatusCode.OK, airports)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.InternalServerError, HttpResponses.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    // Get all airlines
+    get("/airlines/all") {
+        try {
+            val airlines = airlineDAO.getAllAirlines()
+            call.respond(HttpStatusCode.OK, airlines)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.InternalServerError, HttpResponses.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    // Get all hotels
+    get("/hotels/all") {
+        try {
+            val hotels = hotelDAO.getAllHotels()
+            call.respond(HttpStatusCode.OK, hotels)
         } catch (e: Exception) {
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, HttpResponses.INTERNAL_SERVER_ERROR)
@@ -137,10 +161,11 @@ fun Route.bookingRoutes() {
             val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
             val requester = userDAO.getUser(requesterId)
 
-            // Check if user is owner
+            // Check if user is owner and process bookings
             if (requester?.id == userId) {
                 val allBookings = bookingDAO.getBookingsByUser(userId)
-                call.respond(HttpStatusCode.OK, allBookings)
+                val updatedBookings = placesService.processBookingsImage(allBookings)
+                call.respond(HttpStatusCode.OK, updatedBookings)
             } else {
                 call.respond(HttpStatusCode.Forbidden, HttpResponses.FORBIDDEN)
             }

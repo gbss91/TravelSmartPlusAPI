@@ -110,7 +110,7 @@ fun Route.authRoutes() {
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.sessions.set(UserSession(userId = user.id))
-                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup))
+                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup, user.orgId))
             } else {
                 call.respond(HttpStatusCode.Unauthorized, INVALID_CREDENTIALS)
             }

@@ -116,7 +116,8 @@ class BookingTests {
             hotelBooking = hotelBooking,
             adultsNumber = 2,
             status = "CONFIRMED",
-            totalPrice = BigDecimal("760.00")
+            totalPrice = BigDecimal("760.00"),
+            imageUrl = "https://maps.googleapis.com/maps/api/place/photo"
         )
 
         assert(booking.id == 1)
@@ -129,6 +130,7 @@ class BookingTests {
         assert(booking.adultsNumber == 2)
         assert(booking.status == "CONFIRMED")
         assert(booking.totalPrice == BigDecimal("760.00"))
+        assert(booking.imageUrl == "https://maps.googleapis.com/maps/api/place/photo")
 
         // Test Serializer
         val json = Json.encodeToString(booking)

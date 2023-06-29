@@ -52,8 +52,8 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-                val claimUser = credential.payload.getClaim("userId").asString()
-                val isAdmin = dao.getUser(claimUser.toInt())?.admin
+                val claimUser = credential.payload.getClaim("userId").asString().toInt()
+                val isAdmin = dao.getUser(claimUser)?.admin
                 if (isAdmin == true) {
                     JWTPrincipal(credential.payload)
                 } else {

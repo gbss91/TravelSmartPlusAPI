@@ -23,7 +23,7 @@ object HttpResponses {
     const val FAILED_PASSWORD_UPDATE = "Failed to update password. Please try again later."
 
     const val UNAUTHORIZED = "Unauthorised. Please sign in."
-    const val FORBIDDEN = "You are not authorized to perform this request."
+    const val FORBIDDEN = "You are not authorised to perform this request."
     const val INTERNAL_SERVER_ERROR = "Internal Server Error. Please try again later."
     const val BAD_REQUEST = "Invalid request format."
     const val NOT_FOUND = "Resource not found. Please review request and try again."

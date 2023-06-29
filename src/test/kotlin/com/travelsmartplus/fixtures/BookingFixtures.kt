@@ -40,6 +40,7 @@ object BookingFixtures {
             every { booking.adultsNumber } returns 1
             every { booking.status } returns "CONFIRMED"
             every { booking.totalPrice } returns totalPrice
+            every { booking.imageUrl } returns "https://maps.googleapis.com/maps/api/place/photo"
 
             bookings.add(booking)
         }

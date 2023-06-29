@@ -75,6 +75,28 @@ class BookingFunctionalTests {
     }
 
     @Test
+    fun `get all airlines`() = testApplication {
+        application { testModule() }
+        val response = client.get("api/airlines/all") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        val responseBody = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertNotNull(responseBody)
+    }
+
+    @Test
+    fun `get all hotels`() = testApplication {
+        application { testModule() }
+        val response = client.get("api/hotels/all") {
+            header(HttpHeaders.Authorization, "Bearer $token")
+        }
+        val responseBody = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertNotNull(responseBody)
+    }
+
+    @Test
     fun `fetch flight offers manually`() = testApplication {
         application { testModule() }
         val request = client.post("api/booking/flights") {
@@ -159,7 +181,7 @@ class BookingFunctionalTests {
     }
 
     @Test
-    fun `get all user booking`() = testApplication {
+    fun `get all user bookings`() = testApplication {
         application { testModule() }
         val response = client.get("api/bookings/1") {
             header(HttpHeaders.Authorization, "Bearer $token")

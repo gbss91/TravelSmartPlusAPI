@@ -7,7 +7,9 @@ import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.network.sockets.*
 import kotlinx.serialization.json.Json
+import kotlin.Exception
 
 /**
  * Retrieves flights from the [Amadeus Flight API](https://developers.amadeus.com/self-service/category/flights)
@@ -50,6 +52,9 @@ class FlightApi {
             } else {
                 throw IllegalStateException("Failed to retrieve flights. Response status: ${response.status}")
             }
+        } catch (e: SocketTimeoutException) {
+            e.printStackTrace()
+            throw IllegalStateException("Connection timeout", e)
         } catch (e: Exception) {
             e.printStackTrace()
             throw IllegalStateException("Error occurred while retrieving flights", e)

@@ -8,7 +8,7 @@ import kotlin.math.sqrt
  * [Reference](https://www.stratascratch.com/blog/step-by-step-guide-to-building-content-based-filtering/)
  *
  * @param T the type of the items to recommend
- * @throws IllegalArgumentException if user preferences is empty
+ * @throws IllegalArgumentException if user preferences is empty or item not found
  */
 
 class ContentBasedAlgorithm<T> {

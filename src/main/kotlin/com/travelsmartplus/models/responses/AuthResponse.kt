@@ -14,5 +14,6 @@ import kotlinx.serialization.Serializable
 data class AuthResponse(
     val token: String,
     val refreshToken: String,
-    val accountSetup: Boolean
+    val accountSetup: Boolean,
+    val orgId: Int? = null
 )
