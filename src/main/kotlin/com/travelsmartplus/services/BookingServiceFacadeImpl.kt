@@ -4,6 +4,7 @@ import com.travelsmartplus.dao.booking.BookingDAOFacadeImpl
 import com.travelsmartplus.models.Booking
 import com.travelsmartplus.models.User
 import com.travelsmartplus.models.requests.BookingSearchRequest
+import com.travelsmartplus.recomendation.ContentBasedRecommendationFacadeImpl
 import com.travelsmartplus.recomendation.KNNRecommendationFacadeImpl
 
 /**
@@ -24,6 +25,7 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
     private val flightService: FlightBookingServiceFacadeImpl = FlightBookingServiceFacadeImpl()
     private val hotelService: HotelBookingServiceFacadeImpl = HotelBookingServiceFacadeImpl()
     private val knn: KNNRecommendationFacadeImpl = KNNRecommendationFacadeImpl()
+    private val contentBased: ContentBasedRecommendationFacadeImpl = ContentBasedRecommendationFacadeImpl()
     private val bookingDAO: BookingDAOFacadeImpl = BookingDAOFacadeImpl()
 
     override suspend fun newPredictedBooking(bookingSearchRequest: BookingSearchRequest, user: User): Booking? {
@@ -33,13 +35,42 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
             if (userId == null || userId == 0) return null
 
             val previousBookings = bookingDAO.getBookingsByUser(user.id)
-            val preferredAirlines = user.preferredAirlines ?: emptySet()
-            val preferredHotels = user.preferredHotelChains ?: emptySet()
+            val preferredAirlines = user.preferredAirlines ?: emptyList()
+            val preferredHotels = user.preferredHotelChains ?: emptyList()
             val flightResults = flightService.getFlights(bookingSearchRequest)
 
-            // Use simple prediction if less than 2 bookings - else use KNN Algorithm
+            // Use Content Based recommendation if less than 2 bookings - else use KNN Algorithm
             if (previousBookings.size < 2) {
-                return null
+
+                // Recommend Flight
+                val predictedFlight = contentBased.recommendFlights(preferredAirlines, flightResults) ?: return null
+
+                val newBooking = Booking(
+                    user = user,
+                    origin = bookingSearchRequest.origin,
+                    destination = bookingSearchRequest.destination,
+                    departureDate = bookingSearchRequest.departureDate,
+                    returnDate = bookingSearchRequest.returnDate,
+                    flightBooking = predictedFlight,
+                    hotelBooking = null,
+                    adultsNumber = bookingSearchRequest.adultsNumber,
+                    status = "PENDING",
+                    totalPrice = predictedFlight.totalPrice
+                )
+
+                // Search and predict hotel if included in request
+                if (bookingSearchRequest.hotel) {
+                    val hotelResults = hotelService.getHotels(bookingSearchRequest)
+                    val predictedHotel = contentBased.recommendHotels(preferredHotels, hotelResults) ?: return null
+
+                    val nights = bookingSearchRequest.checkOutDate!!.dayOfYear - bookingSearchRequest.checkInDate!!.dayOfYear
+                    val totalPrice = predictedHotel.rate * nights.toBigDecimal()
+                    newBooking.hotelBooking = predictedHotel
+                    newBooking.totalPrice += totalPrice
+                }
+
+                return newBooking
+
             } else {
 
                 // Train algorithm

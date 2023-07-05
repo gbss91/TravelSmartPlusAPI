@@ -137,7 +137,7 @@ class UserFunctionalTests {
     @Test
     fun `setup account`() = testApplication {
         application { testModule() }
-        val setupAccountRequest = SetupAccountRequest("MyNewPass1234!", setOf("AA", "EI"), setOf("MC", "AC"))
+        val setupAccountRequest = SetupAccountRequest("MyNewPass1234!", listOf("AA", "EI"), listOf("MC", "AC"))
         val request = client.post("api/user/1/setup") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
             contentType(ContentType.Application.Json)

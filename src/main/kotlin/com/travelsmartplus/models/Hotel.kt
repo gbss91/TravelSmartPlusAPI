@@ -14,7 +14,7 @@ data class Hotel(
 
 // Table
 object Hotels: IntIdTable() {
-    val hotelChain = varchar("hotel_chain", 50)
+    val hotelChain = varchar("hotel_chain", 100)
     val code = varchar("code", 2)
 }
 

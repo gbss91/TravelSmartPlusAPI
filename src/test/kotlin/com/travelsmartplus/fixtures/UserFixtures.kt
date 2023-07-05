@@ -14,8 +14,8 @@ object UserFixtures {
             password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d", // myPass123
             salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7",
             accountSetup = true,
-            preferredAirlines = setOf("UA", "EI", "DL"),
-            preferredHotelChains = setOf("MC")
+            preferredAirlines = listOf("United Airlines", "Aer Lingus", "Delta Airlines"),
+            preferredHotelChains = listOf("Hilton", "Marriott")
         ),
         User(
             id = 2,
@@ -27,7 +27,7 @@ object UserFixtures {
             password = "23646131f8752ab2e9d65345cfc7b5d515af4661a15ba749922cb2e674c36d9d",// myPass123
             salt = "e41ea5cc46b2b8b8099f81cd1e493bc6ad6f9d4d19fc149f37ca4ae154ba28f7",
             accountSetup = true,
-            preferredAirlines = setOf("UA", "EI", "DL"),
+            preferredAirlines = listOf("United Airlines", "Aer Lingus", "Delta Airlines"),
         )
     )
 }

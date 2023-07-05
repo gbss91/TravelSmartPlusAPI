@@ -35,7 +35,8 @@ object TestDatabaseFactory {
                 Airports,
                 Airlines,
                 Hotels,
-                HotelBookings
+                HotelBookings,
+                TravelDetails
             )
         }
     }

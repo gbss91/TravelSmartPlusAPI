@@ -4,6 +4,7 @@ import com.travelsmartplus.fixtures.*
 import com.travelsmartplus.models.*
 import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.responses.AuthResponse
+import com.travelsmartplus.utils.Encryptor
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -52,6 +53,16 @@ object DatabaseTestHelper {
                 this[Users.accountSetup] = user.accountSetup
                 this[Users.preferredAirlines] = user.preferredAirlines.toString()
                 this[Users.preferredHotelChains] = user.preferredHotelChains.toString()
+            }
+
+            TravelDetails.batchInsert(TravelDataFixtures.travelDetails) { travelData ->
+                this[TravelDetails.id] = travelData.id!!
+                this[TravelDetails.userId] = travelData.userId
+                this[TravelDetails.dob] = Encryptor.encrypt(travelData.dob.toString())
+                this[TravelDetails.nationality] = travelData.nationality
+                this[TravelDetails.passportNumber] = Encryptor.encrypt(travelData.passportNumber)
+                this[TravelDetails.passportExpiryDate] = Encryptor.encrypt(travelData.passportExpiryDate.toString())
+
             }
 
             Airports.batchInsert(AirportFixtures.airports) { airport ->
@@ -155,6 +166,7 @@ object DatabaseTestHelper {
             Airlines.deleteAll()
             Hotels.deleteAll()
             Bookings.deleteAll()
+            TravelDetails.deleteAll()
 
             exec("ALTER SEQUENCE orgs_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE users_id_seq RESTART WITH 1;")
@@ -166,6 +178,7 @@ object DatabaseTestHelper {
             exec("ALTER SEQUENCE flightsegments_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE flights_id_seq RESTART WITH 1;")
             exec("ALTER SEQUENCE bookings_id_seq RESTART WITH 1;")
+            exec("ALTER SEQUENCE traveldetails_id_seq RESTART WITH 1;")
         }
     }
 

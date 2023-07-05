@@ -26,17 +26,17 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
     private val hotelDao = HotelDAOFacadeImpl()
     private lateinit var allAirlines: List<Airline>
     private lateinit var allHotels: List<Hotel>
-    private lateinit var preferredAirlines: Set<String>
-    private lateinit var preferredHotels: Set<String>
+    private lateinit var preferredAirlines: List<String>
+    private lateinit var preferredHotels: List<String>
 
     // Train algorithm using previous bookings
     override suspend fun trainModel(
         previousBookings: List<Booking>,
-        preferredAirlines: Set<String>,
-        preferredHotels: Set<String>
+        preferredAirlines: List<String>,
+        preferredHotels: List<String>
     ) {
         try {
-            // Initialise airlines and preferences
+            // Initialise airline, hotels and preferences
             allAirlines = airlineDao.getAllAirlines()
             allHotels = hotelDao.getAllHotels()
             this.preferredAirlines = preferredAirlines
@@ -112,11 +112,11 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
 
         // Encode airlines as numerical value and add it to features - One-hot approach
         val flightsSegments = flightBooking.segments
-        val airlineFeatures = encodeAirlines(flightsSegments)
+        val airlineFeatures = FeatureEncoder.encodeAirlines(flightsSegments, allAirlines, preferredAirlines)
         features.addAll(airlineFeatures)
 
         // Encode travel class as a numerical value and add it to features
-        val travelClassFeature = encodeTravelClass(flightBooking.travelClass)
+        val travelClassFeature = FeatureEncoder.encodeTravelClass(flightBooking.travelClass)
         features.add(travelClassFeature)
 
         // Return normalised features
@@ -132,51 +132,11 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
         features.add(hotelBooking.totalPrice.toDouble())
 
         // Encode hotels and add it to features - One-hot approach
-        val hotelFeatures = encodeHotels(hotelBooking)
+        val hotelFeatures = FeatureEncoder.encodeHotels(hotelBooking, allHotels, preferredHotels)
         features.addAll(hotelFeatures)
 
         // Return normalised features
         return FeatureScaling.minMaxNormalization(features)
     }
 
-    private fun encodeAirlines(segments: List<FlightSegment>): List<Double> {
-        val encodedFeatures = mutableListOf<Double>()
-
-        for (airline in allAirlines) {
-
-            // Increase weight for preferred airlines
-            val weight = if (preferredAirlines.contains(airline.iataCode)) 2.0 else 1.0
-
-            val encodedFeature = if (segments.any { it.flights.any { flight ->
-                flight.carrierIataCode == airline.iataCode
-            } }) weight else 0.0
-
-            encodedFeatures.add(encodedFeature)
-        }
-        return encodedFeatures
-    }
-
-    private fun encodeHotels(hotelBooking: HotelBooking): List<Double> {
-        val encodedFeatures = mutableListOf<Double>()
-
-        for (hotel in allHotels) {
-
-            // Increase weight for preferred hotels
-            val weight = if (preferredHotels.contains(hotelBooking.hotelChainCode)) 2.0 else 1.0
-            val encodedFeature = if (hotelBooking.hotelChainCode == hotel.hotelChain) weight else 0.0
-            encodedFeatures.add(encodedFeature)
-        }
-        return encodedFeatures
-    }
-
-
-    private fun encodeTravelClass(travelClass: String): Double {
-        return when (travelClass) {
-            "ECONOMY" -> 1.0
-            "PREMIUM_ECONOMY" -> 2.0
-            "BUSINESS" -> 3.0
-            "FIRST" -> 4.0
-            else -> 0.0
-        }
-    }
 }

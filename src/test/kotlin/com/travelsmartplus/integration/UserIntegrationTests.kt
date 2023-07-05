@@ -33,6 +33,8 @@ class UserIntegrationTests {
     fun `get user by user Id`() = runBlocking {
         val user = dao.getUser(1)
         assertEquals(1, user?.id)
+        assertEquals("John", user?.firstName)
+        assertEquals("United States", user?.travelData?.nationality)
     }
 
     @Test

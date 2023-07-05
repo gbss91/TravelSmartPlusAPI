@@ -14,10 +14,7 @@ import kotlin.math.sqrt
 class ContentBasedAlgorithm<T> {
 
     // Recommends using user and items matrix
-    fun recommend(userPreferences: DoubleArray, itemFeatures: List<DoubleArray>, items: List<T>): Pair<T, Double> {
-        if (userPreferences.isEmpty()) {
-            throw IllegalArgumentException("No user preferences provided")
-        }
+    fun recommend(userPreferences: DoubleArray, itemFeatures: List<DoubleArray>, items: List<T>): T? {
 
         var maxSimilarity = Double.MIN_VALUE
         var recommendedItem: T? = null
@@ -32,12 +29,8 @@ class ContentBasedAlgorithm<T> {
             }
         }
 
-        if (recommendedItem == null) {
-            throw IllegalStateException("No item found")
-        }
-
         // Return item and similarity score
-        return Pair(recommendedItem, maxSimilarity)
+        return recommendedItem
     }
 
 

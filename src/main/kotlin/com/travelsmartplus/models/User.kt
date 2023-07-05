@@ -19,8 +19,9 @@ data class User(
     var password: String,
     var salt: String,
     var accountSetup: Boolean,
-    var preferredAirlines: Set<String>? = null,
-    var preferredHotelChains: Set<String>? = null
+    var preferredAirlines: List<String>? = null,
+    var preferredHotelChains: List<String>? = null,
+    var travelData: TravelData? = null
 )
 
 // Table
@@ -54,8 +55,9 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
 
 // Transform entity to data class
 fun UserEntity.toUser(): User {
-    val preferredAirlinesSet = preferredAirlines?.split(",")?.toSet()
-    val preferredHotelChainsSet = preferredHotelChains?.split(",")?.toSet()
+    val preferredAirlinesSet = preferredAirlines?.split(",")
+    val preferredHotelChainsSet = preferredHotelChains?.split(",")
+    val travelData = TravelDataEntity.find { TravelDetails.userId eq id.value}.singleOrNull()?.toTravelData()
     return User(
         id.value,
         orgId.id.value,
@@ -67,6 +69,7 @@ fun UserEntity.toUser(): User {
         salt,
         accountSetup,
         preferredAirlinesSet,
-        preferredHotelChainsSet
+        preferredHotelChainsSet,
+        travelData
     )
 }

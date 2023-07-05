@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SetupAccountRequest(
     val newPassword: String,
-    val preferredAirlines: Set<String>,
-    val preferredHotelChains: Set<String>
+    val preferredAirlines: List<String>,
+    val preferredHotelChains: List<String>
 )

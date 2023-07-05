@@ -5,8 +5,8 @@ import com.travelsmartplus.models.Hotel
 object HotelChainFixtures {
     val hotelChains = listOf(
         Hotel(
-            hotelChain = "Intercontinental",
-            code = "IH"
+            hotelChain = "Hilton",
+            code = "HH"
         ),
         Hotel(
             hotelChain = "Marriott",
