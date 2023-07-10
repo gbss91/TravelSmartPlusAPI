@@ -54,8 +54,8 @@ class UserDAOFacadeImpl : UserDAOFacade {
             password = editedUser.password
             salt = editedUser.salt
             accountSetup = editedUser.accountSetup
-            preferredAirlines = editedUser.preferredAirlines.toString()
-            preferredHotelChains = editedUser.preferredHotelChains.toString()
+            preferredAirlines = editedUser.preferredAirlines?.joinToString()
+            preferredHotelChains = editedUser.preferredHotelChains?.joinToString()
         }
         userEntity.toUser()
     }

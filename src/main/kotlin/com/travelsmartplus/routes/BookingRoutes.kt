@@ -8,7 +8,10 @@ import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.Booking
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.models.responses.HttpResponses
-import com.travelsmartplus.services.*
+import com.travelsmartplus.services.BookingServiceFacadeImpl
+import com.travelsmartplus.services.FlightBookingServiceFacadeImpl
+import com.travelsmartplus.services.HotelBookingServiceFacadeImpl
+import com.travelsmartplus.services.PlacesServiceFacadeImpl
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -122,7 +125,9 @@ fun Route.bookingRoutes() {
             val request = call.receive<BookingSearchRequest>()
             val hotels = hotelService.getHotels(request)
 
-            call.respond(HttpStatusCode.OK, hotels)
+            val updatedHotels = placesService.getAddress(hotels)
+
+            call.respond(HttpStatusCode.OK, updatedHotels)
 
         } catch (e: ContentTransformationException) {
             e.printStackTrace()
@@ -138,7 +143,9 @@ fun Route.bookingRoutes() {
     post("/booking") {
         try {
             val request = call.receive<Booking>()
-            val newBooking = bookingDAO.addBooking(request)
+            request.status = "CONFIRMED"
+            request.flightBooking.status = "CONFIRMED"
+            val newBooking = bookingService.addBooking(request)
 
             call.respond(HttpStatusCode.OK, newBooking)
 
@@ -158,11 +165,11 @@ fun Route.bookingRoutes() {
     get("bookings/{userId}") {
         try {
             val userId = call.parameters["userId"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-            val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
-            val requester = userDAO.getUser(requesterId)
+            val requesterId =
+                call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
 
             // Check if user is owner and process bookings
-            if (requester?.id == userId) {
+            if (requesterId == userId) {
                 val allBookings = bookingDAO.getBookingsByUser(userId)
                 val updatedBookings = placesService.processBookingsImage(allBookings)
                 call.respond(HttpStatusCode.OK, updatedBookings)
@@ -185,11 +192,12 @@ fun Route.bookingRoutes() {
         get {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+                    .toInt()// User ID in JWT Token
                 val booking = bookingDAO.getBooking(id) ?: throw NotFoundException()
 
                 // Check if user is owner or admin belongs to the same org
-                if (requesterId == booking.user.id|| isAdminSameOrg(requesterId, booking.user.id!!)) {
+                if (requesterId == booking.user.id || isAdminSameOrg(requesterId, booking.user.id!!)) {
                     call.respond(HttpStatusCode.OK, booking)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, HttpResponses.FORBIDDEN)
@@ -211,11 +219,12 @@ fun Route.bookingRoutes() {
         delete {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+                    .toInt()// User ID in JWT Token
                 val booking = bookingDAO.getBooking(id) ?: throw NotFoundException()
 
                 // Check if user is owner or admin belongs to the same org
-                if (requesterId == booking.user.id|| isAdminSameOrg(requesterId, booking.user.id!!)) {
+                if (requesterId == booking.user.id || isAdminSameOrg(requesterId, booking.user.id!!)) {
                     bookingDAO.deleteBooking(id)
                     call.respond(HttpStatusCode.OK)
                 } else {
@@ -238,7 +247,7 @@ fun Route.bookingRoutes() {
 
 // Check if the user is an admin in the same organization
 private suspend fun isAdminSameOrg(requesterId: Int, userId: Int): Boolean {
-    val requester = dao.getUser(requesterId)
-    val user = dao.getUser(userId) ?: throw NotFoundException()
+    val requester = userDao.getUser(requesterId)
+    val user = userDao.getUser(userId) ?: throw NotFoundException()
     return (requester?.admin == true) && (requester.orgId == user.orgId)
 }

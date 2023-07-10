@@ -7,6 +7,8 @@ import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
+import io.ktor.client.call.body
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.network.sockets.*

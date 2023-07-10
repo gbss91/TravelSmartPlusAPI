@@ -8,6 +8,16 @@ import com.travelsmartplus.fixtures.UserFixtures
 import com.travelsmartplus.models.Booking
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.testModule
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -27,15 +37,15 @@ class BookingFunctionalTests {
     private lateinit var token: String
     private val bookingSearchRequest = BookingSearchRequest(
         userId = 1,
-        oneWay= false,
-        nonStop= true,
-        origin= AirportFixtures.airports[0],
-        destination= AirportFixtures.airports[1],
-        departureDate= LocalDate(2023, 12, 5),
-        returnDate= LocalDate(2023, 12, 10),
-        adultsNumber= 1,
-        travelClass= "ECONOMY",
-        hotel= false
+        oneWay = false,
+        nonStop = true,
+        origin = AirportFixtures.airports[0],
+        destination = AirportFixtures.airports[1],
+        departureDate = LocalDate(2023, 12, 5),
+        returnDate = LocalDate(2023, 12, 10),
+        adultsNumber = 1,
+        travelClass = "ECONOMY",
+        hotel = false
     )
 
     @Before
@@ -118,14 +128,14 @@ class BookingFunctionalTests {
             userId = 1,
             oneWay = false,
             nonStop = false,
-            origin= AirportFixtures.airports[0],
-            destination= AirportFixtures.airports[1],
+            origin = AirportFixtures.airports[0],
+            destination = AirportFixtures.airports[1],
             departureDate = LocalDate(2023, 11, 5),
             returnDate = LocalDate(2023, 11, 10),
             adultsNumber = 1,
             travelClass = "ECONOMY",
             hotel = true,
-            checkInDate =  LocalDate(2023, 11, 5),
+            checkInDate = LocalDate(2023, 11, 5),
             checkOutDate = LocalDate(2023, 11, 10)
         )
 

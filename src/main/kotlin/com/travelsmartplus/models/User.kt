@@ -34,8 +34,8 @@ object Users : IntIdTable() {
     val password = varchar("password", 355)
     val salt = varchar("salt", 100)
     val accountSetup = bool("account_setup")
-    val preferredAirlines = varchar("preferred_airlines", 50).nullable()
-    val preferredHotelChains = varchar("preferred_hotels", 50).nullable()
+    val preferredAirlines = varchar("preferred_airlines", 100).nullable()
+    val preferredHotelChains = varchar("preferred_hotels", 100).nullable()
 }
 
 // Entity - Represents row in table
@@ -55,8 +55,8 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
 
 // Transform entity to data class
 fun UserEntity.toUser(): User {
-    val preferredAirlinesSet = preferredAirlines?.split(",")
-    val preferredHotelChainsSet = preferredHotelChains?.split(",")
+    val preferredAirlinesList = preferredAirlines?.split(", ")
+    val preferredHotelChainsList = preferredHotelChains?.split(", ")
     val travelData = TravelDataEntity.find { TravelDetails.userId eq id.value}.singleOrNull()?.toTravelData()
     return User(
         id.value,
@@ -68,8 +68,8 @@ fun UserEntity.toUser(): User {
         password,
         salt,
         accountSetup,
-        preferredAirlinesSet,
-        preferredHotelChainsSet,
+        preferredAirlinesList,
+        preferredHotelChainsList,
         travelData
     )
 }

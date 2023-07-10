@@ -1,7 +1,10 @@
 package com.travelsmartplus.unit
 
 import com.travelsmartplus.DatabaseTestHelper
-import com.travelsmartplus.fixtures.*
+import com.travelsmartplus.fixtures.AirportFixtures
+import com.travelsmartplus.fixtures.FlightFixtures
+import com.travelsmartplus.fixtures.HotelFixtures
+import com.travelsmartplus.fixtures.UserFixtures
 import com.travelsmartplus.recomendation.ContentBasedRecommendationFacadeImpl
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.toKotlinLocalDate

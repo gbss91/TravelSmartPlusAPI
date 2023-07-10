@@ -5,7 +5,6 @@ import com.travelsmartplus.models.AirportEntity
 import com.travelsmartplus.models.Airports
 import com.travelsmartplus.models.toAirport
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.or
 
 /**
  * Implementation of the [AirportDAOFacade] interface.

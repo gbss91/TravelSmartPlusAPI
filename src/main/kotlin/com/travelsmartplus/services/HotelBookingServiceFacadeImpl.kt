@@ -7,7 +7,6 @@ import com.travelsmartplus.apis.apiResponses.AmadeusHotelOffersResponse
 import com.travelsmartplus.models.HotelBooking
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import kotlinx.datetime.toLocalDate
-import java.net.SocketTimeoutException
 
 /**
  * Implementation of the [HotelBookingServiceFacade] interface. Handles data processing logic for API responses.
@@ -66,10 +65,10 @@ class HotelBookingServiceFacadeImpl : HotelBookingServiceFacade {
             HotelBooking(
                 hotelName = hotelOffer.hotel.name,
                 hotelChainCode = hotelOffer.hotel.chainCode,
-                address = hotelOffer.hotel.latitude.toString(),
+                address = "", // Updated when making call
                 checkInDate = hotelOffer.offers[0].checkInDate.toLocalDate(),
                 checkOutDate = hotelOffer.offers[0].checkOutDate.toLocalDate(),
-                roomType = hotelOffer.offers[0].room?.type,
+                roomType = hotelOffer.offers[0].room?.typeEstimated?.bedType?.lowercase()?.replaceFirstChar { it.uppercase() },
                 rate = hotelOffer.offers[0].price.total.toBigDecimal(),
                 totalPrice = totalPrice,
                 latitude = hotelOffer.hotel.latitude!!,

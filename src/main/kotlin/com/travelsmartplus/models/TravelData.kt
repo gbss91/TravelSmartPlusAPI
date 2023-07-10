@@ -2,7 +2,6 @@ package com.travelsmartplus.models
 
 import com.travelsmartplus.utils.Encryptor
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDate
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.IntEntity

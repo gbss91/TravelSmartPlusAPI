@@ -6,6 +6,7 @@ import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.responses.AuthResponse
 import com.travelsmartplus.utils.Encryptor
 import io.ktor.client.call.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
@@ -121,7 +122,8 @@ object DatabaseTestHelper {
                     this[FlightSegments.stops] = segment.stops
                 }
 
-                val insertedSegments = FlightSegmentEntity.find { FlightSegments.flightBookingId eq booking.id }.map { it.toFlightSegment() }
+                val insertedSegments = FlightSegmentEntity.find { FlightSegments.flightBookingId eq booking.id }
+                    .map { it.toFlightSegment() }
 
                 segments.forEachIndexed { index, segment ->
                     val insertedSegment = insertedSegments[index]

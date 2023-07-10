@@ -12,6 +12,7 @@ object HttpResponses {
     const val FAILED_DELETE_ORG = "Failed to delete organisation. Please try again later."
 
     const val DUPLICATE_USER = "User already exists. Please sign in."
+    const val DUPLICATE_ADD_USER = "Email address already in use"
     const val FAILED_CREATE_USER = "Failed to create user. Please try again later."
     const val FAILED_EDIT_USER = "Failed to edit user. Please try again later."
     const val FAILED_DELETE_USER = "Failed to delete user. Please try again later."

@@ -6,4 +6,5 @@ import com.travelsmartplus.models.requests.BookingSearchRequest
 
 interface BookingServiceFacade {
     suspend fun newPredictedBooking(bookingSearchRequest: BookingSearchRequest, user: User): Booking?
+    suspend fun addBooking(booking: Booking): Booking
 }

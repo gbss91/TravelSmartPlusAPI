@@ -41,7 +41,8 @@ class TravelDataDAOFacadeImpl : TravelDataDAOFacade {
     }
 
     override suspend fun editTravelData(id: Int, travelData: TravelData): TravelData = dbQuery {
-        val travelEntity = TravelDataEntity.findById(id) ?: throw NotFoundException("Travel Data not found")
+        val travelEntity = TravelDataEntity.find { TravelDetails.userId eq id }.firstOrNull()
+            ?: throw NotFoundException("Travel Data not found")
 
         // Encrypt sensitive data
         val encryptedPassportNumber = Encryptor.encrypt(travelData.passportNumber)

@@ -5,11 +5,11 @@ import com.travelsmartplus.apis.apiResponses.AmadeusFlightOffersResponse
 import com.travelsmartplus.models.requests.BookingSearchRequest
 import com.travelsmartplus.utils.HttpClientFactory
 import io.ktor.client.call.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.network.sockets.*
 import kotlinx.serialization.json.Json
-import kotlin.Exception
 
 /**
  * Retrieves flights from the [Amadeus Flight API](https://developers.amadeus.com/self-service/category/flights)

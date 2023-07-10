@@ -1,7 +1,6 @@
 package com.travelsmartplus.utils
 
 import com.travelsmartplus.models.requests.SetupAccountRequest
-import com.travelsmartplus.models.requests.SignInRequest
 import com.travelsmartplus.models.requests.SignUpRequest
 import com.travelsmartplus.models.requests.UpdatePasswordRequest
 

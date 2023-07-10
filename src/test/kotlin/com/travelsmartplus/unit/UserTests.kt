@@ -43,6 +43,6 @@ class UserTests {
         assertEquals(false, user.admin)
         assertEquals("password", user.password)
         assertEquals("salt", user.salt)
-        assertEquals("United States", user.travelData?.nationality)
+        assertEquals("Ireland", user.travelData?.nationality)
     }
 }

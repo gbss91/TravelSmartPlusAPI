@@ -2,10 +2,10 @@ package com.travelsmartplus.services
 
 import com.travelsmartplus.apis.PlacesApi
 import com.travelsmartplus.models.Booking
-import com.travelsmartplus.models.requests.BookingSearchRequest
+import com.travelsmartplus.models.HotelBooking
 
 /**
- * Implementation of the [PlacesServiceFacade] interface. Process the image URL for bookings.
+ * Implementation of the [PlacesServiceFacade] interface. Process the image URL and address for bookings.
  * @author Gabriel Salas
  */
 
@@ -18,20 +18,41 @@ class PlacesServiceFacadeImpl : PlacesServiceFacade {
 
         val updatedBookings = mutableListOf<Booking>()
 
-        try {
-            for (booking in allBookings) {
-                // Get the image for destination city
+        for (booking in allBookings) {
+            try {
+                // Get the image for the destination city
                 val imageUrl = placesApi.getImageUrl(booking.destination.city)
-
-                // Add the image URL to the booking object and add it to updated bookings
                 booking.imageUrl = imageUrl
-                updatedBookings.add(booking)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+            // Add the booking to updated bookings
+            updatedBookings.add(booking)
         }
 
         return updatedBookings
+    }
+
+    override suspend fun getAddress(hotelBookings: List<HotelBooking>): List<HotelBooking> {
+
+        val updatedHotelBookings = mutableListOf<HotelBooking>()
+
+        for (hotelBooking in hotelBookings) {
+
+            try {
+                // Get address and add it to booking
+                val formattedAddress = placesApi.getAddress(hotelBooking.latitude, hotelBooking.longitude) ?: ""
+                hotelBooking.address = formattedAddress
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            updatedHotelBookings.add(hotelBooking)
+        }
+
+        return updatedHotelBookings
     }
 }

@@ -2,7 +2,10 @@ package com.travelsmartplus.recomendation
 
 import com.travelsmartplus.dao.airline.AirlineDAOFacadeImpl
 import com.travelsmartplus.dao.hotel.HotelDAOFacadeImpl
-import com.travelsmartplus.models.*
+import com.travelsmartplus.models.Airline
+import com.travelsmartplus.models.FlightBooking
+import com.travelsmartplus.models.Hotel
+import com.travelsmartplus.models.HotelBooking
 
 /**
  * Implementation of [ContentBasedRecommendationFacade] interface.
@@ -26,8 +29,6 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
     private val hotelDao = HotelDAOFacadeImpl()
     private lateinit var allAirlines: List<Airline>
     private lateinit var allHotels: List<Hotel>
-    private lateinit var preferredAirlines: List<String>
-    private lateinit var preferredHotels: List<String>
 
     override suspend fun recommendFlights(preferences: List<String>, flights: List<FlightBooking>): FlightBooking? {
         try {
@@ -35,9 +36,9 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
                 return null
             }
 
-            // Initialise airlines and preferences
+            // Initialise airlines
             allAirlines = airlineDao.getAllAirlines()
-            preferredAirlines = preferences
+            println("RECOMMEND FLIGHT - GOT  HERE")
 
             // Create features matrix for user preferences
             val userPreferences = FeatureEncoder.encodeAirlinePreferences(allAirlines, preferences)
@@ -45,7 +46,7 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
             // Create item features matrix for flights
             val itemFeatures = mutableListOf<DoubleArray>()
             for (flightBooking in flights) {
-                val flightFeatures = getFlightFeatures(flightBooking)
+                val flightFeatures = getFlightFeatures(preferences, flightBooking)
                 itemFeatures.add(flightFeatures)
             }
 
@@ -64,9 +65,8 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
                 return null
             }
 
-            // Initialise hotels and preferences
+            // Initialise hotels
             allHotels = hotelDao.getAllHotels()
-            preferredHotels = preferences
 
             // Create features matrix for user preferences
             val userPreferences = FeatureEncoder.encodeHotelPreferences(allHotels, preferences)
@@ -74,7 +74,7 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
             // Create item features matrix for flights
             val itemFeatures = mutableListOf<DoubleArray>()
             for (hotelBooking in hotels) {
-                val hotelFeatures = getHotelFeatures(hotelBooking)
+                val hotelFeatures = getHotelFeatures(preferences, hotelBooking)
                 itemFeatures.add(hotelFeatures)
             }
 
@@ -89,23 +89,23 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
     }
 
 
-    private fun getFlightFeatures(flightBooking: FlightBooking): DoubleArray {
+    private fun getFlightFeatures(preferences: List<String>, flightBooking: FlightBooking): DoubleArray {
         val features = mutableListOf<Double>()
 
         // Encode hotels and add it to features - One-hot approach
         val flightsSegments = flightBooking.segments
-        val airlineFeatures = FeatureEncoder.encodeAirlines(flightsSegments, allAirlines, preferredAirlines)
+        val airlineFeatures = FeatureEncoder.encodeAirlines(flightsSegments, allAirlines, preferences)
         features.addAll(airlineFeatures)
 
         return features.toDoubleArray()
 
     }
 
-    private fun getHotelFeatures(hotelBooking: HotelBooking): DoubleArray {
+    private fun getHotelFeatures(preferences: List<String>, hotelBooking: HotelBooking): DoubleArray {
         val features = mutableListOf<Double>()
 
         // Encode hotels and add it to features - One-hot approach
-        val hotelFeatures = FeatureEncoder.encodeHotels(hotelBooking, allHotels, preferredHotels)
+        val hotelFeatures = FeatureEncoder.encodeHotels(hotelBooking, allHotels, preferences)
         features.addAll(hotelFeatures)
 
         return features.toDoubleArray()

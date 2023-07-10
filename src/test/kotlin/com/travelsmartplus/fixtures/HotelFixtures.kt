@@ -25,7 +25,7 @@ object HotelFixtures {
         val totalPrice = rate * BigDecimal.valueOf(durationOfStay.toLong())
 
         // Generate random hotel chain code
-        val hotelChains = listOf("HH", "PD", "MC", "JD", "WY")
+        val hotelChains = listOf("HH", "HI", "MC")
         val randomChainCode = hotelChains[Random.nextInt(hotelChains.size)]
 
         // Configure properties of mock hotel booking
@@ -38,8 +38,8 @@ object HotelFixtures {
         every { hotelBooking.roomType } returns "Standard Room"
         every { hotelBooking.rate } returns rate
         every { hotelBooking.totalPrice } returns totalPrice
-        every { hotelBooking.latitude } returns 37.7749
-        every { hotelBooking.longitude } returns -122.4194
+        every { hotelBooking.latitude } returns 40.714224
+        every { hotelBooking.longitude } returns -73.961452
 
         return hotelBooking
     }

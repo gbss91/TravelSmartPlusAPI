@@ -9,15 +9,15 @@ object TravelDataFixtures {
             id = 1,
             userId = 1,
             dob =  LocalDate(2033, 2, 15),
-            nationality =  "United States",
-            passportNumber = "A4842452",
+            nationality =  "Ireland",
+            passportNumber = "8536356",
             passportExpiryDate = LocalDate(1985, 8, 23)
         ),
         TravelData(
             id = 2,
             userId = 2,
             dob =  LocalDate(2029, 2, 15),
-            nationality =  "British",
+            nationality =  "United States",
             passportNumber = "G09873643",
             passportExpiryDate = LocalDate(1995, 2, 15)
         )

@@ -1,7 +1,5 @@
 package com.travelsmartplus.recomendation
 
-import kotlin.math.sqrt
-
 /**
  * Content-Based filtering algorithm implementation.
  * Provides personalized recommendations based on user preferences and item features.

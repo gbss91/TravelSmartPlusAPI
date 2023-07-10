@@ -3,8 +3,9 @@ package com.travelsmartplus.routes
 import com.travelsmartplus.dao.booking.BookingDAOFacadeImpl
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
 import com.travelsmartplus.models.User
+import com.travelsmartplus.models.requests.AddUserRequest
 import com.travelsmartplus.models.responses.HttpResponses
-import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_USER
+import com.travelsmartplus.models.responses.HttpResponses.DUPLICATE_ADD_USER
 import com.travelsmartplus.models.responses.HttpResponses.FAILED_CREATE_USER
 import com.travelsmartplus.models.responses.HttpResponses.INTERNAL_SERVER_ERROR
 import com.travelsmartplus.utils.HashingService
@@ -32,7 +33,8 @@ fun Route.adminRoutes() {
     get("/admin/users/{orgId}") {
         try {
             val orgId = call.parameters["orgId"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-            val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+            val requesterId =
+                call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
             val requester = userDAO.getUser(requesterId)
 
             // Check admin belongs to company
@@ -55,24 +57,32 @@ fun Route.adminRoutes() {
     // Create user
     post("/admin/new-user") {
         try {
-            val request = call.receive<User>()
+            val request = call.receive<AddUserRequest>()
+            val requesterId =
+                call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+            val orgId = userDAO.getUser(requesterId)?.orgId ?: return@post call.respond(
+                HttpStatusCode.InternalServerError,
+                FAILED_CREATE_USER
+            )
 
             // Validate duplicate user
-            if (userDAO.getUserByEmail(request.email) != null)
-                return@post call.respond(HttpStatusCode.Conflict, DUPLICATE_USER)
+            if (userDAO.getUserByEmail(request.email) != null) return@post call.respond(
+                HttpStatusCode.Conflict,
+                DUPLICATE_ADD_USER
+            )
 
 
             // Create hash and user
             val saltedHash = hashingService.generate(request.password)
             val user = User(
-                orgId = request.orgId,
+                orgId = orgId,
                 firstName = request.firstName,
                 lastName = request.lastName,
                 email = request.email,
                 admin = request.admin,
                 password = saltedHash.hash,
                 salt = saltedHash.salt,
-                accountSetup = request.accountSetup
+                accountSetup = false
             )
             userDAO.addUser(user) ?: return@post call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
 
@@ -81,8 +91,10 @@ fun Route.adminRoutes() {
             e.printStackTrace()
             call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
         } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
         }
     }
@@ -91,7 +103,8 @@ fun Route.adminRoutes() {
     get("/admin/bookings/{orgId}") {
         try {
             val orgId = call.parameters["orgId"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-            val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+            val requesterId =
+                call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
             val requester = userDAO.getUser(requesterId)
 
             // Check admin belongs to company
@@ -106,6 +119,7 @@ fun Route.adminRoutes() {
             e.printStackTrace()
             call.respond(HttpStatusCode.BadRequest, HttpResponses.BAD_REQUEST)
         } catch (e: Exception) {
+            e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
         }
     }

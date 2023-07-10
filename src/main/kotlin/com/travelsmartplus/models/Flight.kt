@@ -10,8 +10,6 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.javatime.datetime
 
-
-
 // Data class
 @Serializable
 data class Flight(
@@ -49,7 +47,8 @@ class FlightEntity(id: EntityID<Int>): IntEntity(id) {
 fun FlightEntity.toFlight(): Flight {
     val departureAirport = AirportEntity.find { Airports.iataCode eq departureIataCode }.single().toAirport()
     val arrivalAirport = AirportEntity.find { Airports.iataCode eq arrivalIataCode }.single().toAirport()
+    val carrierName = AirlineEntity.find { Airlines.iataCode eq carrierIataCode }.firstOrNull()?.airlineName ?: "N/A"
 
-    return Flight(id.value, departureAirport, departureTime.toKotlinLocalDateTime(), arrivalAirport, arrivalTime.toKotlinLocalDateTime(), carrierIataCode)
+    return Flight(id.value, departureAirport, departureTime.toKotlinLocalDateTime(), arrivalAirport, arrivalTime.toKotlinLocalDateTime(), carrierIataCode, carrierName)
 
 }

@@ -17,7 +17,7 @@ data class HotelBooking(
     val id: Int? = 0,
     val hotelName: String,
     val hotelChainCode: String? = null,
-    val address: String,
+    var address: String,
     val checkInDate: LocalDate,
     val checkOutDate: LocalDate,
     val roomType: String? = null,

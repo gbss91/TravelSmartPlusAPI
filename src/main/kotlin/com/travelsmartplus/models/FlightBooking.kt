@@ -18,7 +18,7 @@ data class FlightBooking(
     val destinationCity: String,
     val segments: List<FlightSegment>,
     val travelClass: String,
-    val status: String,
+    var status: String,
     @Serializable(with = BigDecimalSerializer::class)
     val totalPrice: BigDecimal,
 )

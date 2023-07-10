@@ -2,8 +2,17 @@ package com.travelsmartplus.functional
 
 import com.travelsmartplus.DatabaseTestHelper
 import com.travelsmartplus.models.User
+import com.travelsmartplus.models.requests.AddUserRequest
 import com.travelsmartplus.models.requests.SetupAccountRequest
 import com.travelsmartplus.testModule
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -35,21 +44,19 @@ class UserFunctionalTests {
     @Test
     fun `admin creates new user`() = testApplication {
         application { testModule() }
-        val user = User(
-            orgId = 1,
+        val user = AddUserRequest(
             firstName = "Sara",
             lastName = "Smith",
             email = "sara@test.com",
             admin = true,
-            password = "myPass123",
-            salt = "123",
-            accountSetup = true
+            password = "myPass123"
         )
         val request = client.post("api/admin/new-user") {
             header(HttpHeaders.Authorization, "Bearer $adminToken")
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(user))
         }
+        println("ERROR: ${request.status.description}")
         assertEquals(HttpStatusCode.Created, request.status)
     }
 

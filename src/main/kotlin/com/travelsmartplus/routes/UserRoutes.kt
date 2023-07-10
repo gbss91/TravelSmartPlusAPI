@@ -1,6 +1,8 @@
 package com.travelsmartplus.routes
 
+import com.travelsmartplus.dao.user.TravelDataDAOFacadeImpl
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
+import com.travelsmartplus.models.TravelData
 import com.travelsmartplus.models.User
 import com.travelsmartplus.models.requests.SetupAccountRequest
 import com.travelsmartplus.models.responses.HttpResponses.BAD_REQUEST
@@ -27,7 +29,8 @@ import io.ktor.server.routing.*
  * @author Gabriel Salas
  */
 
-val dao = UserDAOFacadeImpl()
+val userDao = UserDAOFacadeImpl()
+val travelDao = TravelDataDAOFacadeImpl()
 
 fun Route.userRoutes() {
 
@@ -38,11 +41,12 @@ fun Route.userRoutes() {
         get {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+                    .toInt()// User ID in JWT Token
 
                 // Check if user is owner or admin belongs to the same org
                 if (requesterId == id || isAdminSameOrg(requesterId, id)) {
-                    val user = dao.getUser(id) ?: throw NotFoundException()
+                    val user = userDao.getUser(id) ?: throw NotFoundException()
                     call.respond(HttpStatusCode.OK, user)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, FORBIDDEN)
@@ -64,12 +68,17 @@ fun Route.userRoutes() {
         put {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+                    .toInt()// User ID in JWT Token
                 val editedUser = call.receive<User>()
 
                 // Check if user is owner or admin belongs to the same org
-                if (requesterId == id|| isAdminSameOrg(requesterId, id)) {
-                    val user = dao.editUser(id, editedUser)
+                if (requesterId == id || isAdminSameOrg(requesterId, id)) {
+                    val user = userDao.editUser(id, editedUser)
+
+                    // Add travel data if available
+                    user.travelData = addEditTravelData(editedUser)
+
                     call.respond(HttpStatusCode.Created, user)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, FORBIDDEN)
@@ -94,11 +103,12 @@ fun Route.userRoutes() {
         delete {
             try {
                 val id = call.parameters["id"]?.toIntOrNull() ?: throw BadRequestException("Missing parameter")
-                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString().toInt()// User ID in JWT Token
+                val requesterId = call.principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+                    .toInt()// User ID in JWT Token
 
                 // Check if user is owner or admin belongs to the same org
-                if (requesterId == id|| isAdminSameOrg(requesterId, id)) {
-                    dao.deleteUser(id)
+                if (requesterId == id || isAdminSameOrg(requesterId, id)) {
+                    userDao.deleteUser(id)
                     call.respond(HttpStatusCode.OK)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, FORBIDDEN)
@@ -125,17 +135,17 @@ fun Route.userRoutes() {
             Validator.validateSetupAccountRequest(request)
 
             // Check if user exists
-            val user = dao.getUser(id) ?: throw NotFoundException()
+            val user = userDao.getUser(id) ?: throw NotFoundException()
 
             // Encrypt and store password
             val saltedHash = hashingService.generate(request.newPassword)
-            dao.updatePassword(id, saltedHash)
+            userDao.updatePassword(id, saltedHash)
 
             // Update user preferences and account setup
             user.preferredAirlines = request.preferredAirlines
             user.preferredHotelChains = request.preferredHotelChains
             user.accountSetup = true
-            dao.editUser(id, user)
+            userDao.editUser(id, user)
 
             call.respond(HttpStatusCode.Created)
         } catch (e: BadRequestException) {
@@ -159,7 +169,25 @@ fun Route.userRoutes() {
 
 // Check if the user is an admin in the same organization
 private suspend fun isAdminSameOrg(requesterId: Int, userId: Int): Boolean {
-    val requester = dao.getUser(requesterId)
-    val user = dao.getUser(userId) ?: throw NotFoundException()
+    val requester = userDao.getUser(requesterId)
+    val user = userDao.getUser(userId) ?: throw NotFoundException()
     return (requester?.admin == true) && (requester.orgId == user.orgId)
+}
+
+// Add or edit travel data accordingly
+private suspend fun addEditTravelData(user: User): TravelData? {
+    var travelData = user.travelData
+    val userId = user.id ?: throw BadRequestException("Missing parameter")
+
+    if (travelData != null) {
+
+        // Check if travel data already exists for this user
+        val exitingTravelData = travelDao.getTravelData(userId)
+        if (exitingTravelData == null) {
+            travelData = travelDao.addTravelData(travelData) // Add new data
+        } else {
+            travelData = travelDao.editTravelData(userId, travelData) // Edit existing data
+        }
+    }
+    return travelData
 }

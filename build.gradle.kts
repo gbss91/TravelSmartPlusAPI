@@ -32,20 +32,6 @@ repositories {
 dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-    implementation("io.ktor:ktor-server-core-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-cors-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.1")
-    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-sessions-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-netty-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-auth:2.3.1")
-    implementation("io.ktor:ktor-server-auth-jwt:2.3.1")
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.1")
-    implementation("io.ktor:ktor-client-core-jvm:2.3.1")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.1")
-    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.1")
-    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.1")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 
 
     // Database dependencies
@@ -58,7 +44,21 @@ dependencies {
 
     // Testing
     implementation("commons-codec:commons-codec:$commonsCodecVersion")
+    implementation("io.ktor:ktor-server-core-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-cors-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-sessions-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-auth:2.3.2")
+    implementation("io.ktor:ktor-server-auth-jwt:2.3.2")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.2")
+    implementation("io.ktor:ktor-client-core-jvm:2.3.2")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.2")
+    implementation("io.ktor:ktor-client-okhttp-jvm:2.3.2")
+    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("org.testng:testng:7.7.0")
     testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("io.ktor:ktor-server-tests-jvm:2.3.1")
+    testImplementation("io.ktor:ktor-server-tests-jvm:2.3.2")
 }

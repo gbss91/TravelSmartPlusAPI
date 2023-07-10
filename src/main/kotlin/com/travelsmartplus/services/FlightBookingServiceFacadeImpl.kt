@@ -20,6 +20,8 @@ import kotlin.time.Duration
 
 class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
     private val flightApi: FlightApi = FlightApi()
+    private val airportDAO: AirportDAOFacadeImpl = AirportDAOFacadeImpl()
+    private val airlineDAO: AirlineDAOFacadeImpl = AirlineDAOFacadeImpl()
 
     override suspend fun getFlights(bookingSearchRequest: BookingSearchRequest): List<FlightBooking> {
         try {
@@ -47,14 +49,12 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
 
                     // Create flights
                     Flight(
-                        departureAirport = AirportDAOFacadeImpl().getAirport(flight.departure.iataCode)
-                            ?: throw NotFoundException(),
+                        departureAirport = airportDAO.getAirport(flight.departure.iataCode) ?: throw NotFoundException(),
                         departureTime = flight.departure.at.toLocalDateTime(),
-                        arrivalAirport = AirportDAOFacadeImpl().getAirport(flight.arrival.iataCode)
-                            ?: throw NotFoundException(),
+                        arrivalAirport = airportDAO.getAirport(flight.arrival.iataCode) ?: throw NotFoundException(),
                         arrivalTime = flight.arrival.at.toLocalDateTime(),
                         carrierIataCode = flight.carrierCode,
-                        carrierName = AirlineDAOFacadeImpl().getAirline(flight.carrierCode)?.airlineName ?: flight.carrierCode // Display Iata if no name
+                        carrierName = airlineDAO.getAirline(flight.carrierCode)?.airlineName ?: flight.carrierCode // Display Iata if no name
                     )
                 }
 
@@ -69,7 +69,7 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
 
             // Create flight bookings
             FlightBooking(
-                bookingReference = "RGETHE",
+                bookingReference = generateRandomBookingCode(),
                 oneWay = bookingSearchRequest.oneWay,
                 originCity = bookingSearchRequest.origin.city,
                 destinationCity = bookingSearchRequest.destination.city,
@@ -79,5 +79,15 @@ class FlightBookingServiceFacadeImpl : FlightBookingServiceFacade {
                 totalPrice = flightOffer.price.grandTotal.toBigDecimal()
             )
         }
+    }
+
+    private fun generateRandomBookingCode(): String {
+        val characters = ('A'..'Z') + ('0'..'9')
+        val codeLength = 6
+        val random = java.util.Random()
+
+        return (1..codeLength)
+            .map { characters[random.nextInt(characters.size)] }
+            .joinToString("")
     }
 }

@@ -24,11 +24,11 @@ class BookingDAOFacadeImpl : BookingDAOFacade {
         BookingEntity.find { Bookings.orgId eq orgId }.map { it.toBooking() }
     }
 
-    override suspend fun addBooking(booking: Booking): Booking = dbQuery {
+    override suspend fun addBooking(booking: Booking, flightBookingId: Int, hotelBookingId: Int?): Booking = dbQuery {
         val user = UserEntity.findById(booking.user.id!!) ?: throw NotFoundException("User not found")
         val orgId = OrgEntity[user.orgId.id]
-        val flightBooking = FlightBookingEntity[booking.flightBooking.id!!] // All bookings will have a flight booking
-        val hotelBooking = booking.hotelBooking?.id?.let { HotelBookingEntity[it] }
+        val flightBooking = FlightBookingEntity[flightBookingId]
+        val hotelBooking = hotelBookingId?.let { HotelBookingEntity[it] }
         BookingEntity.new {
             userId = user
             this.orgId = orgId
@@ -36,8 +36,8 @@ class BookingDAOFacadeImpl : BookingDAOFacade {
             destinationIata = booking.destination.iataCode
             departureDate = booking.departureDate.toJavaLocalDate()
             returnDate = booking.returnDate?.toJavaLocalDate()
-            flightBookingId = flightBooking
-            hotelBookingId = hotelBooking
+            this.flightBookingId = flightBooking
+            this.hotelBookingId = hotelBooking
             adultsNumber = booking.adultsNumber
             status = booking.status
             totalPrice = booking.totalPrice

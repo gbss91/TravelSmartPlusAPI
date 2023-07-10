@@ -12,4 +12,5 @@ object Endpoints {
     const val HOTEL_LIST = "$AMADEUS_TEST_BASE_URL/v1/reference-data/locations/hotels/by-city"
     const val SEARCH_HOTEL = "$AMADEUS_TEST_BASE_URL/v3/shopping/hotel-offers"
     const val PLACE_SEARCH = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
+    const val ADDRESS_SEARCH = "https://maps.googleapis.com/maps/api/geocode/json"
 }

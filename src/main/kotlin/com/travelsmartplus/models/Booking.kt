@@ -26,7 +26,7 @@ data class Booking(
     val flightBooking: FlightBooking,
     var hotelBooking: HotelBooking?,
     val adultsNumber: Int,
-    val status: String,
+    var status: String,
     @Serializable(with = BigDecimalSerializer::class)
     var totalPrice: BigDecimal,
     var imageUrl: String? = null

@@ -110,7 +110,10 @@ fun Route.authRoutes() {
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.sessions.set(UserSession(userId = user.id))
-                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup, user.orgId))
+                call.respond(
+                    HttpStatusCode.OK,
+                    AuthResponse(token, refreshToken, user.accountSetup, user.admin, user.orgId)
+                )
             } else {
                 call.respond(HttpStatusCode.Unauthorized, INVALID_CREDENTIALS)
             }
@@ -142,7 +145,7 @@ fun Route.authRoutes() {
                 val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
-                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup))
+                call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup, user.admin))
 
             } catch (e: NotFoundException) {
                 e.printStackTrace()
