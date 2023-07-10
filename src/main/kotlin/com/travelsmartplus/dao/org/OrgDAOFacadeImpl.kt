@@ -1,9 +1,25 @@
 package com.travelsmartplus.dao.org
 
+<<<<<<< HEAD
 import com.travelsmartplus.dao.DatabaseFactory.dbQuery
 import com.travelsmartplus.models.*
 import io.ktor.server.plugins.*
 
+=======
+import com.travelsmartplus.models.Org
+import com.travelsmartplus.models.OrgEntity
+import com.travelsmartplus.models.Orgs
+import com.travelsmartplus.models.toOrg
+import com.travelsmartplus.utils.DatabaseFactory.dbQuery
+import io.ktor.server.plugins.*
+
+/**
+ * Implementation of the [OrgDAOFacade] interface.
+ * This class provides methods to get, add and delete org information from the database.
+ * @author Gabriel Salas
+ */
+
+>>>>>>> development
 class OrgDAOFacadeImpl : OrgDAOFacade {
 
     override suspend fun getOrg(id: Int): Org? = dbQuery {
@@ -37,6 +53,10 @@ class OrgDAOFacadeImpl : OrgDAOFacade {
 
     override suspend fun deleteOrg(id: Int) = dbQuery {
         val org = OrgEntity.findById(id) ?: throw NotFoundException("Organization not found")
+<<<<<<< HEAD
         OrgEntity[org.id].delete()
+=======
+        org.delete()
+>>>>>>> development
     }
 }

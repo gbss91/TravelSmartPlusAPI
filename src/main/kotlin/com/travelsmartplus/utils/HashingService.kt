@@ -1,10 +1,21 @@
 package com.travelsmartplus.utils
 
+<<<<<<< HEAD
 import io.ktor.server.config.*
+=======
+>>>>>>> development
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import java.security.SecureRandom
 
+<<<<<<< HEAD
+=======
+/**
+ * HashingService provides functions for generating and verifying hashed values using salt.
+ * @author Gabriel Salas
+ */
+
+>>>>>>> development
 class HashingService {
 
     // Generates salt and hash using user password
