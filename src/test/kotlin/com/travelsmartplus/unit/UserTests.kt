@@ -1,32 +1,14 @@
 package com.travelsmartplus.unit
 
-<<<<<<< HEAD
-import com.travelsmartplus.models.User
-import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-=======
 import com.travelsmartplus.fixtures.TravelDataFixtures
 import com.travelsmartplus.models.User
 import org.junit.Test
 import kotlin.test.assertEquals
->>>>>>> development
+
 
 class UserTests {
 
     @Test
-<<<<<<< HEAD
-    fun testUser() {
-        // Test instance of user
-        val user = User(1, 15, "Paul", "Smith", "paul@test.com", true , "14f675f", "12345")
-        assertNotNull(user)
-
-        // Test get userId
-        assertEquals(1, user.id)
-
-        // Test get email
-        assertEquals("paul@test.com", user.email)
-=======
     fun `create user with required values`() {
         val user = User(orgId = 1, firstName = "John", lastName = "Doe", email = "johndoe@example.com", admin = false, password = "password", salt = "salt", accountSetup = true)
         assertEquals(1, user.orgId)
@@ -63,6 +45,5 @@ class UserTests {
         assertEquals("password", user.password)
         assertEquals("salt", user.salt)
         assertEquals("Ireland", user.travelData?.nationality)
->>>>>>> development
     }
 }

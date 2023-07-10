@@ -1,11 +1,5 @@
 package com.travelsmartplus.dao.org
 
-<<<<<<< HEAD
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
-import com.travelsmartplus.models.*
-import io.ktor.server.plugins.*
-
-=======
 import com.travelsmartplus.models.Org
 import com.travelsmartplus.models.OrgEntity
 import com.travelsmartplus.models.Orgs
@@ -19,7 +13,7 @@ import io.ktor.server.plugins.*
  * @author Gabriel Salas
  */
 
->>>>>>> development
+
 class OrgDAOFacadeImpl : OrgDAOFacade {
 
     override suspend fun getOrg(id: Int): Org? = dbQuery {
@@ -53,10 +47,6 @@ class OrgDAOFacadeImpl : OrgDAOFacade {
 
     override suspend fun deleteOrg(id: Int) = dbQuery {
         val org = OrgEntity.findById(id) ?: throw NotFoundException("Organization not found")
-<<<<<<< HEAD
-        OrgEntity[org.id].delete()
-=======
         org.delete()
->>>>>>> development
     }
 }

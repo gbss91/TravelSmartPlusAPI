@@ -2,8 +2,6 @@ package com.travelsmartplus.models.requests
 
 import kotlinx.serialization.Serializable
 
-<<<<<<< HEAD
-=======
 /**
  * Represents a sign-up request made by user.
  * @author Gabriel Salas
@@ -15,7 +13,6 @@ import kotlinx.serialization.Serializable
  * @property duns The unique DUNS (Data Universal Numbering System) number for the organization.
  */
 
->>>>>>> development
 @Serializable
 data class SignUpRequest(
     val firstName: String,

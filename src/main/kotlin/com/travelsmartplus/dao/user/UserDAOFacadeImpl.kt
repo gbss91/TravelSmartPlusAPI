@@ -1,11 +1,5 @@
 package com.travelsmartplus.dao.user
 
-<<<<<<< HEAD
-import com.travelsmartplus.dao.DatabaseFactory.dbQuery
-import com.travelsmartplus.models.*
-import io.ktor.server.plugins.*
-
-=======
 import com.travelsmartplus.models.*
 import com.travelsmartplus.utils.DatabaseFactory.dbQuery
 import com.travelsmartplus.utils.SaltedHash
@@ -17,7 +11,7 @@ import io.ktor.server.plugins.*
  * @author Gabriel Salas
  */
 
->>>>>>> development
+
 class UserDAOFacadeImpl : UserDAOFacade {
 
     override suspend fun getUser(id: Int): User? = dbQuery {
@@ -46,32 +40,11 @@ class UserDAOFacadeImpl : UserDAOFacade {
                 this.admin = user.admin
                 this.password = user.password
                 this.salt = user.salt
-<<<<<<< HEAD
-=======
                 this.accountSetup = user.accountSetup
->>>>>>> development
             }.toUser()
         }
     }
 
-<<<<<<< HEAD
-    override suspend fun editUser(
-        id: Int,
-        firstName: String,
-        lastName: String,
-        email: String,
-        admin: Boolean,
-        password: String,
-        salt: String
-    ) = dbQuery {
-        val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
-        UserEntity[user.id].firstName = firstName
-        UserEntity[user.id].lastName = lastName
-        UserEntity[user.id].email = email
-        UserEntity[user.id].admin = admin
-        UserEntity[user.id].password = password
-        UserEntity[user.id].salt = salt
-=======
     override suspend fun editUser(id: Int, editedUser: User): User = dbQuery {
         val userEntity = UserEntity.findById(id) ?: throw NotFoundException("User not found")
         userEntity.apply {
@@ -92,15 +65,10 @@ class UserDAOFacadeImpl : UserDAOFacade {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
         user.password = newPassword.hash
         user.salt = newPassword.salt
->>>>>>> development
     }
 
     override suspend fun deleteUser(id: Int) = dbQuery {
         val user = UserEntity.findById(id) ?: throw NotFoundException("User not found")
-<<<<<<< HEAD
-        UserEntity[user.id].delete()
-=======
         user.delete()
->>>>>>> development
     }
 }

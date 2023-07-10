@@ -3,11 +3,6 @@ package com.travelsmartplus.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
-<<<<<<< HEAD
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-=======
->>>>>>> development
 
 fun Application.configureHTTP() {
     install(CORS) {

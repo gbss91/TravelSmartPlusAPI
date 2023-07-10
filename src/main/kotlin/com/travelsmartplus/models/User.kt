@@ -12,14 +12,6 @@ import org.jetbrains.exposed.sql.ReferenceOption
 data class User(
     val id: Int? = 0,
     val orgId: Int,
-<<<<<<< HEAD
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val admin: Boolean,
-    val password: String,
-    val salt: String
-=======
     var firstName: String,
     var lastName: String,
     var email: String,
@@ -30,7 +22,6 @@ data class User(
     var preferredAirlines: List<String>? = null,
     var preferredHotelChains: List<String>? = null,
     var travelData: TravelData? = null
->>>>>>> development
 )
 
 // Table
@@ -42,12 +33,9 @@ object Users : IntIdTable() {
     val admin = bool("admin")
     val password = varchar("password", 355)
     val salt = varchar("salt", 100)
-<<<<<<< HEAD
-=======
     val accountSetup = bool("account_setup")
     val preferredAirlines = varchar("preferred_airlines", 100).nullable()
     val preferredHotelChains = varchar("preferred_hotels", 100).nullable()
->>>>>>> development
 }
 
 // Entity - Represents row in table
@@ -60,12 +48,6 @@ class UserEntity(id: EntityID<Int>) : IntEntity(id) {
     var admin by Users.admin
     var password by Users.password
     var salt by Users.salt
-<<<<<<< HEAD
-}
-
-// Transform entity to data class
-fun UserEntity.toUser() = User(id.value, orgId.id.value, firstName, lastName, email, admin, password, salt)
-=======
     var accountSetup by Users.accountSetup
     var preferredAirlines by Users.preferredAirlines
     var preferredHotelChains by Users.preferredHotelChains
@@ -91,4 +73,4 @@ fun UserEntity.toUser(): User {
         travelData
     )
 }
->>>>>>> development
+

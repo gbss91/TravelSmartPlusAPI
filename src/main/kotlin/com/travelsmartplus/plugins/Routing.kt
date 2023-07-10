@@ -17,10 +17,7 @@ fun Application.configureRouting() {
 
             authenticate("auth-jwt") {
                 userRoutes()
-<<<<<<< HEAD
-=======
                 bookingRoutes()
->>>>>>> development
             }
 
             authRoutes()

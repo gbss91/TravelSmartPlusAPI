@@ -1,8 +1,5 @@
 package com.travelsmartplus.models.requests
 
-<<<<<<< HEAD
-data class BookingSearchRequest()
-=======
 import com.travelsmartplus.models.Airport
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
@@ -38,4 +35,4 @@ data class  BookingSearchRequest(
     val checkInDate: LocalDate? = null,
     val checkOutDate: LocalDate? = null
 )
->>>>>>> development
+

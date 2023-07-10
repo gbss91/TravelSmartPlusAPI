@@ -2,12 +2,6 @@ package com.travelsmartplus.models.responses
 
 import kotlinx.serialization.Serializable
 
-<<<<<<< HEAD
-@Serializable
-data class AuthResponse(
-    val token: String,
-    val refreshToken: String
-=======
 /**
  * Represents the structure for the authentication response
  * @author Gabriel Salas
@@ -24,5 +18,4 @@ data class AuthResponse(
     val accountSetup: Boolean,
     val admin: Boolean,
     val orgId: Int? = null
->>>>>>> development
 )

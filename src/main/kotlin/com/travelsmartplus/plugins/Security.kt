@@ -11,10 +11,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
-<<<<<<< HEAD
-import io.ktor.util.*
-=======
->>>>>>> development
 
 fun Application.configureSecurity() {
     val myRealm = System.getenv("JWT_REALM")
@@ -56,13 +52,10 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-<<<<<<< HEAD
-                val claimUser = credential.payload.getClaim("userId").asString()
-                val isAdmin = dao.getUser(claimUser.toInt())?.admin
-=======
+
                 val claimUser = credential.payload.getClaim("userId").asString().toInt()
                 val isAdmin = dao.getUser(claimUser)?.admin
->>>>>>> development
+
                 if (isAdmin == true) {
                     JWTPrincipal(credential.payload)
                 } else {
@@ -81,8 +74,4 @@ fun Application.configureSecurity() {
         }
     }
 }
-<<<<<<< HEAD
-=======
 
-
->>>>>>> development

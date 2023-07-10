@@ -2,8 +2,6 @@ package com.travelsmartplus.models.requests
 
 import kotlinx.serialization.Serializable
 
-<<<<<<< HEAD
-=======
 /**
  * Represents a sign-in request made by user.
  *  @author Gabriel Salas
@@ -11,7 +9,6 @@ import kotlinx.serialization.Serializable
  * @property password The password of the user attempting to sign in.
  */
 
->>>>>>> development
 @Serializable
 data class SignInRequest(
     val email: String,
