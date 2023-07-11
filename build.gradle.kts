@@ -16,10 +16,16 @@ plugins {
 }
 
 group = "com.travelsmartplus"
-version = "0.0.1"
+version = "1.0"
 
 application {
     mainClass.set("com.travelsmartplus.ApplicationKt")
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+    }
 }
 
 ktlint {
@@ -64,3 +70,5 @@ dependencies {
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("io.ktor:ktor-server-tests-jvm:2.3.2")
 }
+
+
