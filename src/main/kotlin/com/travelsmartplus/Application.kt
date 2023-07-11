@@ -9,8 +9,12 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
+// Use ENV variable for production - Else localhost for development
+val host: String = System.getenv("HOST") ?: "127.0.0.1"
+val port = System.getenv("PORT")?.toIntOrNull() ?: 8000
+
 fun main() {
-    embeddedServer(Netty, port = 8000, watchPaths = listOf("classes"), host = "127.0.0.1", module = Application::module)
+    embeddedServer(Netty, port = port, watchPaths = listOf("classes"), host = host, module = Application::module)
         .start(wait = true)
 }
 
