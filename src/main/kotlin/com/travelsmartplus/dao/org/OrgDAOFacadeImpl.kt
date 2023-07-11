@@ -13,7 +13,6 @@ import io.ktor.server.plugins.*
  * @author Gabriel Salas
  */
 
-
 class OrgDAOFacadeImpl : OrgDAOFacade {
 
     override suspend fun getOrg(id: Int): Org? = dbQuery {

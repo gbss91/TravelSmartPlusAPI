@@ -11,7 +11,6 @@ import io.ktor.server.plugins.*
  * @author Gabriel Salas
  */
 
-
 class UserDAOFacadeImpl : UserDAOFacade {
 
     override suspend fun getUser(id: Int): User? = dbQuery {

@@ -73,4 +73,3 @@ fun UserEntity.toUser(): User {
         travelData
     )
 }
-

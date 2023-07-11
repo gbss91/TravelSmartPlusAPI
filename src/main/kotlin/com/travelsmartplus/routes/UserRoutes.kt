@@ -191,4 +191,3 @@ private suspend fun addEditTravelData(user: User): TravelData? {
     }
     return travelData
 }
-
