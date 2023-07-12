@@ -108,7 +108,7 @@ fun Route.authRoutes() {
 
             // Create JWT tokens and session
             if (isPassValid) {
-                val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
+                val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 120000)
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.sessions.set(UserSession(userId = user.id))
@@ -148,7 +148,7 @@ fun Route.authRoutes() {
 
                 // Generate new tokens
                 val user = userDAO.getUser(userId.toInt()) ?: throw NotFoundException()
-                val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 900000)
+                val token = tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 120000) // 900000
                 val refreshToken =
                     tokenService.generate(TokenClaim("userId", user.id.toString()), expiration = 15778800000)
                 call.respond(HttpStatusCode.OK, AuthResponse(token, refreshToken, user.accountSetup, user.admin))
