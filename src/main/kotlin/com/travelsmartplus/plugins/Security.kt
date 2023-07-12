@@ -3,6 +3,7 @@ package com.travelsmartplus.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.travelsmartplus.dao.user.UserDAOFacadeImpl
+import com.travelsmartplus.models.responses.HttpResponses.FORBIDDEN
 import com.travelsmartplus.models.responses.HttpResponses.UNAUTHORIZED
 import com.travelsmartplus.models.responses.UserSession
 import io.ktor.http.*
@@ -61,7 +62,7 @@ fun Application.configureSecurity() {
                 }
             }
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Forbidden, "Unauthorised")
+                call.respond(HttpStatusCode.Forbidden, FORBIDDEN)
             }
         }
     }
