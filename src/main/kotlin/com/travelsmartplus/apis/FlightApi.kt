@@ -40,7 +40,7 @@ class FlightApi {
                     parameters.append("travelClass", bookingSearchRequest.travelClass)
                     parameters.append("nonStop", bookingSearchRequest.nonStop.toString())
                     parameters.append("currencyCode", "EUR")
-                    parameters.append("max", 5.toString()) // 5 for testing only
+                    parameters.append("max", 20.toString()) // 20 due to free calls restrictions
                 }
                 headers {
                     append(HttpHeaders.Authorization, "Bearer $token")

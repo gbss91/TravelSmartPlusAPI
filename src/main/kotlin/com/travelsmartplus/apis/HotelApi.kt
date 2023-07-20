@@ -32,6 +32,7 @@ class HotelApi {
             val response = client.get(HOTEL_LIST) {
                 url {
                     parameters.append("cityCode", bookingSearchRequest.destination.iataCode)
+                    parameters.append("ratings", listOf("2", "3").toString())
                 }
                 headers {
                     append(HttpHeaders.Authorization, "Bearer $token")
