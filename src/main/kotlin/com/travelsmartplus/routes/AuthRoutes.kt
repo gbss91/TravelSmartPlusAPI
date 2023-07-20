@@ -75,7 +75,7 @@ fun Route.authRoutes() {
                 admin = true,  // First user is always admin
                 password = saltedHash.hash,
                 salt = saltedHash.salt,
-                accountSetup = true
+                accountSetup = false
             )
             userDAO.addUser(user) ?: return@post call.respond(HttpStatusCode.InternalServerError, FAILED_CREATE_USER)
             call.respond(HttpStatusCode.Created)
