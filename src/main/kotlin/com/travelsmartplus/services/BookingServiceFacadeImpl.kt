@@ -29,6 +29,7 @@ import com.travelsmartplus.recomendation.KNNRecommendationFacadeImpl
 class BookingServiceFacadeImpl : BookingServiceFacade {
     private val flightService: FlightBookingServiceFacadeImpl = FlightBookingServiceFacadeImpl()
     private val hotelService: HotelBookingServiceFacadeImpl = HotelBookingServiceFacadeImpl()
+    private val placesService: PlacesServiceFacadeImpl = PlacesServiceFacadeImpl()
     private val knn: KNNRecommendationFacadeImpl = KNNRecommendationFacadeImpl()
     private val contentBased: ContentBasedRecommendationFacadeImpl = ContentBasedRecommendationFacadeImpl()
     private val bookingDAO: BookingDAOFacadeImpl = BookingDAOFacadeImpl()
@@ -72,9 +73,10 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
                 // Search and predict hotel if included in request
                 if (bookingSearchRequest.hotel) {
                     val hotelResults = hotelService.getHotels(bookingSearchRequest)
-                    if (hotelResults.isEmpty()) return null // Return null if no hotels found
+                    val updatedHotelResults = placesService.getAddress(hotelResults)
+                    if (updatedHotelResults.isEmpty()) return null // Return null if no hotels found
 
-                    val predictedHotel = contentBased.recommendHotels(preferredHotels, hotelResults) ?: hotelResults[0]
+                    val predictedHotel = contentBased.recommendHotels(preferredHotels, updatedHotelResults) ?: updatedHotelResults[0]
 
                     val nights = bookingSearchRequest.checkOutDate!!.dayOfYear - bookingSearchRequest.checkInDate!!.dayOfYear
                     val totalPrice = predictedHotel.rate * nights.toBigDecimal()
