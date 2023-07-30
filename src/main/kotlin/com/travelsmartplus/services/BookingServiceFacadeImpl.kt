@@ -73,8 +73,8 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
                 // Search and predict hotel if included in request
                 if (bookingSearchRequest.hotel) {
                     val hotelResults = hotelService.getHotels(bookingSearchRequest)
+                    if (hotelResults.isEmpty()) return null // Return null if no hotels found
                     val updatedHotelResults = placesService.getAddress(hotelResults)
-                    if (updatedHotelResults.isEmpty()) return null // Return null if no hotels found
 
                     val predictedHotel = contentBased.recommendHotels(preferredHotels, updatedHotelResults) ?: updatedHotelResults[0]
 
@@ -110,7 +110,10 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
                 // Search and predict hotel if included in request
                 if (bookingSearchRequest.hotel) {
                     val hotelResults = hotelService.getHotels(bookingSearchRequest)
-                    val predictedHotel = knn.predict(hotelResults) ?: hotelResults[0]
+                    if (hotelResults.isEmpty()) return null // Return null if no hotels found
+                    val updatedHotelResults = placesService.getAddress(hotelResults)
+
+                    val predictedHotel = knn.predict(updatedHotelResults) ?: updatedHotelResults[0]
 
                     val nights = bookingSearchRequest.checkOutDate!!.dayOfYear - bookingSearchRequest.checkInDate!!.dayOfYear
                     val totalPrice = predictedHotel.rate * nights.toBigDecimal()
