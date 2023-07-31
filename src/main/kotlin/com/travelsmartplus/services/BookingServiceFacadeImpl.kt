@@ -112,7 +112,7 @@ class BookingServiceFacadeImpl : BookingServiceFacade {
                     val hotelResults = hotelService.getHotels(bookingSearchRequest)
                     if (hotelResults.isEmpty()) return null // Return null if no hotels found
                     val updatedHotelResults = placesService.getAddress(hotelResults)
-
+m
                     val predictedHotel = knn.predict(updatedHotelResults) ?: updatedHotelResults[0]
 
                     val nights = bookingSearchRequest.checkOutDate!!.dayOfYear - bookingSearchRequest.checkInDate!!.dayOfYear
