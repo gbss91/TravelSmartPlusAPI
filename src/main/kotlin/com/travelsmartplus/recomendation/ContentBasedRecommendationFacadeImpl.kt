@@ -38,7 +38,6 @@ class ContentBasedRecommendationFacadeImpl: ContentBasedRecommendationFacade {
 
             // Initialise airlines
             allAirlines = airlineDao.getAllAirlines()
-            println("RECOMMEND FLIGHT - GOT  HERE")
 
             // Create features matrix for user preferences
             val userPreferences = FeatureEncoder.encodeAirlinePreferences(allAirlines, preferences)
