@@ -70,34 +70,43 @@ class KNNRecommendationFacadeImpl : KNNRecommendationFacade {
 
     // Choose flight based on previous bookings
     override fun predict(flights: List<FlightBooking>): FlightBooking? {
-        // Iterate over the flights to get features
-        val instances = flights.map { flight ->
-            LabeledInstance(
-                features = getFlightFeatures(flight),
-                label = flight
-            )
-        }
+        try {
+            // Iterate over the flights to get features
+            val instances = flights.map { flight ->
+                LabeledInstance(
+                    features = getFlightFeatures(flight),
+                    label = flight
+                )
+            }
 
-        // Predict flight with the closest neighbour
-        val predictedFlight = flightKnnAlgorithm.predict(instances)
-        return predictedFlight?.label
+            // Predict flight with the closest neighbour
+            val predictedFlight = flightKnnAlgorithm.predict(instances)
+            return predictedFlight?.label
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
     }
 
     // Choose hotel based on previous bookings
     override fun predict(hotels: List<HotelBooking>): HotelBooking? {
-        // Iterate over hotels to get features
-        val instances = hotels.map { hotel ->
-            LabeledInstance(
-                features = getHotelFeatures(hotel),
-                label = hotel
-            )
+        try {
+            // Iterate over hotels to get features
+            val instances = hotels.map { hotel ->
+                LabeledInstance(
+                    features = getHotelFeatures(hotel),
+                    label = hotel
+                )
+            }
+
+            // Predict flight with the closest neighbour
+            val predictedHotel = hotelKnnAlgorithm.predict(instances)
+            return predictedHotel?.label
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
         }
-
-        // Predict flight with the closest neighbour
-        val predictedHotel = hotelKnnAlgorithm.predict(instances)
-        return predictedHotel?.label
     }
-
 
     // Extract and normalise relevant features for flights
     private fun getFlightFeatures(flightBooking: FlightBooking): List<Double> {
